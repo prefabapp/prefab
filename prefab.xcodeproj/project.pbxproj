@@ -14,6 +14,9 @@
 		CB78183C2B7D802B0077671A /* prefabTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB78183B2B7D802B0077671A /* prefabTests.swift */; };
 		CB7818462B7D802B0077671A /* prefabUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB7818452B7D802B0077671A /* prefabUITests.swift */; };
 		CB7818482B7D802B0077671A /* prefabUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB7818472B7D802B0077671A /* prefabUITestsLaunchTests.swift */; };
+		CB7818562B7D810B0077671A /* http in Resources */ = {isa = PBXBuildFile; fileRef = CB7818552B7D810B0077671A /* http */; };
+		CB7818582B7D81140077671A /* model in Resources */ = {isa = PBXBuildFile; fileRef = CB7818572B7D81140077671A /* model */; };
+		CB78185B2B7D812E0077671A /* Hummingbird in Frameworks */ = {isa = PBXBuildFile; productRef = CB78185A2B7D812E0077671A /* Hummingbird */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,6 +47,9 @@
 		CB7818412B7D802B0077671A /* prefabUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = prefabUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CB7818452B7D802B0077671A /* prefabUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = prefabUITests.swift; sourceTree = "<group>"; };
 		CB7818472B7D802B0077671A /* prefabUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = prefabUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		CB7818542B7D805E0077671A /* prefab.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = prefab.entitlements; sourceTree = "<group>"; };
+		CB7818552B7D810B0077671A /* http */ = {isa = PBXFileReference; lastKnownFileType = folder; path = http; sourceTree = "<group>"; };
+		CB7818572B7D81140077671A /* model */ = {isa = PBXFileReference; lastKnownFileType = folder; path = model; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -51,6 +57,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CB78185B2B7D812E0077671A /* Hummingbird in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -94,7 +101,10 @@
 		CB7818292B7D802B0077671A /* prefab */ = {
 			isa = PBXGroup;
 			children = (
+				CB7818542B7D805E0077671A /* prefab.entitlements */,
 				CB78182A2B7D802B0077671A /* prefabApp.swift */,
+				CB7818572B7D81140077671A /* model */,
+				CB7818552B7D810B0077671A /* http */,
 				CB78182C2B7D802B0077671A /* ContentView.swift */,
 				CB78182E2B7D802B0077671A /* Assets.xcassets */,
 				CB7818302B7D802B0077671A /* Preview Content */,
@@ -143,6 +153,9 @@
 			dependencies = (
 			);
 			name = prefab;
+			packageProductDependencies = (
+				CB78185A2B7D812E0077671A /* Hummingbird */,
+			);
 			productName = prefab;
 			productReference = CB7818272B7D802B0077671A /* prefab.app */;
 			productType = "com.apple.product-type.application";
@@ -215,6 +228,9 @@
 				Base,
 			);
 			mainGroup = CB78181E2B7D802A0077671A;
+			packageReferences = (
+				CB7818592B7D812E0077671A /* XCRemoteSwiftPackageReference "hummingbird" */,
+			);
 			productRefGroup = CB7818282B7D802B0077671A /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -232,6 +248,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				CB7818322B7D802B0077671A /* Preview Assets.xcassets in Resources */,
+				CB7818562B7D810B0077671A /* http in Resources */,
+				CB7818582B7D81140077671A /* model in Resources */,
 				CB78182F2B7D802B0077671A /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -419,9 +437,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = prefab/prefab.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"prefab/Preview Content\"";
+				DEVELOPMENT_TEAM = X799XV22B8;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -436,9 +456,12 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.kellyp.prefab;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 2;
 			};
 			name = Debug;
 		};
@@ -447,9 +470,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = prefab/prefab.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"prefab/Preview Content\"";
+				DEVELOPMENT_TEAM = X799XV22B8;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -464,9 +489,12 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.kellyp.prefab;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 2;
 			};
 			name = Release;
 		};
@@ -582,6 +610,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		CB7818592B7D812E0077671A /* XCRemoteSwiftPackageReference "hummingbird" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/hummingbird-project/hummingbird.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.12.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		CB78185A2B7D812E0077671A /* Hummingbird */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CB7818592B7D812E0077671A /* XCRemoteSwiftPackageReference "hummingbird" */;
+			productName = Hummingbird;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = CB78181F2B7D802A0077671A /* Project object */;
 }

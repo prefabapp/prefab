@@ -7,8 +7,12 @@
 
 import SwiftUI
 
+
 @main
 struct prefabApp: App {
+    init() {
+        let _ = Server()
+    }
     var body: some Scene {
         WindowGroup {
             ContentView()
