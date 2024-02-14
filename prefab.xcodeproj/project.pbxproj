@@ -14,9 +14,11 @@
 		CB78183C2B7D802B0077671A /* prefabTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB78183B2B7D802B0077671A /* prefabTests.swift */; };
 		CB7818462B7D802B0077671A /* prefabUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB7818452B7D802B0077671A /* prefabUITests.swift */; };
 		CB7818482B7D802B0077671A /* prefabUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB7818472B7D802B0077671A /* prefabUITestsLaunchTests.swift */; };
-		CB7818562B7D810B0077671A /* http in Resources */ = {isa = PBXBuildFile; fileRef = CB7818552B7D810B0077671A /* http */; };
-		CB7818582B7D81140077671A /* model in Resources */ = {isa = PBXBuildFile; fileRef = CB7818572B7D81140077671A /* model */; };
 		CB78185B2B7D812E0077671A /* Hummingbird in Frameworks */ = {isa = PBXBuildFile; productRef = CB78185A2B7D812E0077671A /* Hummingbird */; };
+		CB9C518A2B7D8493007C1AD4 /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9C51872B7D8493007C1AD4 /* Data.swift */; };
+		CB9C518B2B7D8493007C1AD4 /* Server.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9C51882B7D8493007C1AD4 /* Server.swift */; };
+		CB9C518C2B7D8493007C1AD4 /* Routes.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9C51892B7D8493007C1AD4 /* Routes.swift */; };
+		CB9C518F2B7D849D007C1AD4 /* HomeStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9C518E2B7D849D007C1AD4 /* HomeStore.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,8 +50,10 @@
 		CB7818452B7D802B0077671A /* prefabUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = prefabUITests.swift; sourceTree = "<group>"; };
 		CB7818472B7D802B0077671A /* prefabUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = prefabUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		CB7818542B7D805E0077671A /* prefab.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = prefab.entitlements; sourceTree = "<group>"; };
-		CB7818552B7D810B0077671A /* http */ = {isa = PBXFileReference; lastKnownFileType = folder; path = http; sourceTree = "<group>"; };
-		CB7818572B7D81140077671A /* model */ = {isa = PBXFileReference; lastKnownFileType = folder; path = model; sourceTree = "<group>"; };
+		CB9C51872B7D8493007C1AD4 /* Data.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Data.swift; sourceTree = "<group>"; };
+		CB9C51882B7D8493007C1AD4 /* Server.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Server.swift; sourceTree = "<group>"; };
+		CB9C51892B7D8493007C1AD4 /* Routes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Routes.swift; sourceTree = "<group>"; };
+		CB9C518E2B7D849D007C1AD4 /* HomeStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeStore.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,10 +105,10 @@
 		CB7818292B7D802B0077671A /* prefab */ = {
 			isa = PBXGroup;
 			children = (
+				CB9C518D2B7D849D007C1AD4 /* model */,
+				CB9C51862B7D8493007C1AD4 /* http */,
 				CB7818542B7D805E0077671A /* prefab.entitlements */,
 				CB78182A2B7D802B0077671A /* prefabApp.swift */,
-				CB7818572B7D81140077671A /* model */,
-				CB7818552B7D810B0077671A /* http */,
 				CB78182C2B7D802B0077671A /* ContentView.swift */,
 				CB78182E2B7D802B0077671A /* Assets.xcassets */,
 				CB7818302B7D802B0077671A /* Preview Content */,
@@ -135,6 +139,24 @@
 				CB7818472B7D802B0077671A /* prefabUITestsLaunchTests.swift */,
 			);
 			path = prefabUITests;
+			sourceTree = "<group>";
+		};
+		CB9C51862B7D8493007C1AD4 /* http */ = {
+			isa = PBXGroup;
+			children = (
+				CB9C51872B7D8493007C1AD4 /* Data.swift */,
+				CB9C51882B7D8493007C1AD4 /* Server.swift */,
+				CB9C51892B7D8493007C1AD4 /* Routes.swift */,
+			);
+			path = http;
+			sourceTree = "<group>";
+		};
+		CB9C518D2B7D849D007C1AD4 /* model */ = {
+			isa = PBXGroup;
+			children = (
+				CB9C518E2B7D849D007C1AD4 /* HomeStore.swift */,
+			);
+			path = model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -248,8 +270,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				CB7818322B7D802B0077671A /* Preview Assets.xcassets in Resources */,
-				CB7818562B7D810B0077671A /* http in Resources */,
-				CB7818582B7D81140077671A /* model in Resources */,
 				CB78182F2B7D802B0077671A /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -276,6 +296,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				CB78182D2B7D802B0077671A /* ContentView.swift in Sources */,
+				CB9C518A2B7D8493007C1AD4 /* Data.swift in Sources */,
+				CB9C518C2B7D8493007C1AD4 /* Routes.swift in Sources */,
+				CB9C518B2B7D8493007C1AD4 /* Server.swift in Sources */,
+				CB9C518F2B7D849D007C1AD4 /* HomeStore.swift in Sources */,
 				CB78182B2B7D802B0077671A /* prefabApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -444,6 +468,7 @@
 				DEVELOPMENT_TEAM = X799XV22B8;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHomeKitUsageDescription = "Homekit access is required for prefab to function";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -477,6 +502,7 @@
 				DEVELOPMENT_TEAM = X799XV22B8;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHomeKitUsageDescription = "Homekit access is required for prefab to function";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
