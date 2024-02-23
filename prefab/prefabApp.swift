@@ -14,8 +14,9 @@ struct prefabApp: App {
         let _ = Server()
     }
     var body: some Scene {
+        
         WindowGroup {
-            ContentView()
+           ContentView()
         }
     }
 }

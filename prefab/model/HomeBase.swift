@@ -11,9 +11,9 @@ import OSLog
 
 
 /// A container for the home manager that’s accessible throughout the app.
-class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
+class HomeBase: NSObject, ObservableObject, HMHomeManagerDelegate {
     /// A singleton that can be used anywhere in the app to access the home manager.
-    static var shared = HomeStore()
+    static var shared = HomeBase()
 
     @Published var homes: [HMHome] = []
     override init(){
@@ -31,6 +31,5 @@ class HomeStore: NSObject, ObservableObject, HMHomeManagerDelegate {
         Logger().log("Manager: \(manager)")
         Logger().log("Homes: \(manager.homes)")
         homes = manager.homes
-      
     }
 }

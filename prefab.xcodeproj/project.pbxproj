@@ -18,7 +18,20 @@
 		CB9C518A2B7D8493007C1AD4 /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9C51872B7D8493007C1AD4 /* Data.swift */; };
 		CB9C518B2B7D8493007C1AD4 /* Server.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9C51882B7D8493007C1AD4 /* Server.swift */; };
 		CB9C518C2B7D8493007C1AD4 /* Routes.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9C51892B7D8493007C1AD4 /* Routes.swift */; };
-		CB9C518F2B7D849D007C1AD4 /* HomeStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9C518E2B7D849D007C1AD4 /* HomeStore.swift */; };
+		CB9C518F2B7D849D007C1AD4 /* HomeBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9C518E2B7D849D007C1AD4 /* HomeBase.swift */; };
+		CB9C51972B7EB910007C1AD4 /* Root.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9C51962B7EB910007C1AD4 /* Root.swift */; };
+		CB9C51A42B7EBEB8007C1AD4 /* prefab in CopyFiles */ = {isa = PBXBuildFile; fileRef = CB9C51942B7EB910007C1AD4 /* prefab */; };
+		CB9C51A72B7EC005007C1AD4 /* HTTPTypes in Frameworks */ = {isa = PBXBuildFile; productRef = CB9C51A62B7EC005007C1AD4 /* HTTPTypes */; };
+		CB9C51A92B7EC005007C1AD4 /* HTTPTypesFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = CB9C51A82B7EC005007C1AD4 /* HTTPTypesFoundation */; };
+		CB9C51AB2B7ECC3B007C1AD4 /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9C51872B7D8493007C1AD4 /* Data.swift */; };
+		CB9C51B02B80ACE5007C1AD4 /* ArgumentParser in Frameworks */ = {isa = PBXBuildFile; productRef = CB9C51AF2B80ACE5007C1AD4 /* ArgumentParser */; };
+		CBBC0F5A2B87A9F6005217EA /* Prefab+Homes.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBBC0F562B87A6B4005217EA /* Prefab+Homes.swift */; };
+		CBBC0F5B2B87A9F8005217EA /* Client.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9736B12B878F9A005BB6E6 /* Client.swift */; };
+		CBBC0F5C2B87A9FA005217EA /* Client+Homes.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBBC0F542B87A6AA005217EA /* Client+Homes.swift */; };
+		CBBC0F5E2B87CCD3005217EA /* Client+Rooms.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBBC0F5D2B87CCD3005217EA /* Client+Rooms.swift */; };
+		CBBC0F602B87CCE9005217EA /* Prefab+Accessories.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBBC0F5F2B87CCE9005217EA /* Prefab+Accessories.swift */; };
+		CBBC0F622B87CD6A005217EA /* Prefab+Rooms.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBBC0F612B87CD6A005217EA /* Prefab+Rooms.swift */; };
+		CBBC0F642B87D732005217EA /* Client+Accessories.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBBC0F632B87D732005217EA /* Client+Accessories.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,10 +49,48 @@
 			remoteGlobalIDString = CB7818262B7D802B0077671A;
 			remoteInfo = prefab;
 		};
+		CB9C519C2B7EBB52007C1AD4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CB78181F2B7D802A0077671A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CB9C51932B7EB910007C1AD4;
+			remoteInfo = prefab;
+		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		CB9C51922B7EB910007C1AD4 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/local/bin;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+		CB9C51A02B7EBC2F007C1AD4 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 7;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CB9C51A32B7EBEA6007C1AD4 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /opt/homebrew/bin;
+			dstSubfolderSpec = 0;
+			files = (
+				CB9C51A42B7EBEB8007C1AD4 /* prefab in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
-		CB7818272B7D802B0077671A /* prefab.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = prefab.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CB7818272B7D802B0077671A /* Prefab.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Prefab.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CB78182A2B7D802B0077671A /* prefabApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = prefabApp.swift; sourceTree = "<group>"; };
 		CB78182C2B7D802B0077671A /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		CB78182E2B7D802B0077671A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -50,10 +101,19 @@
 		CB7818452B7D802B0077671A /* prefabUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = prefabUITests.swift; sourceTree = "<group>"; };
 		CB7818472B7D802B0077671A /* prefabUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = prefabUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		CB7818542B7D805E0077671A /* prefab.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = prefab.entitlements; sourceTree = "<group>"; };
+		CB9736B12B878F9A005BB6E6 /* Client.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Client.swift; sourceTree = "<group>"; };
 		CB9C51872B7D8493007C1AD4 /* Data.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Data.swift; sourceTree = "<group>"; };
 		CB9C51882B7D8493007C1AD4 /* Server.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Server.swift; sourceTree = "<group>"; };
 		CB9C51892B7D8493007C1AD4 /* Routes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Routes.swift; sourceTree = "<group>"; };
-		CB9C518E2B7D849D007C1AD4 /* HomeStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeStore.swift; sourceTree = "<group>"; };
+		CB9C518E2B7D849D007C1AD4 /* HomeBase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeBase.swift; sourceTree = "<group>"; };
+		CB9C51942B7EB910007C1AD4 /* prefab */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = prefab; sourceTree = BUILT_PRODUCTS_DIR; };
+		CB9C51962B7EB910007C1AD4 /* Root.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Root.swift; sourceTree = "<group>"; };
+		CBBC0F542B87A6AA005217EA /* Client+Homes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Client+Homes.swift"; sourceTree = "<group>"; };
+		CBBC0F562B87A6B4005217EA /* Prefab+Homes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Prefab+Homes.swift"; sourceTree = "<group>"; };
+		CBBC0F5D2B87CCD3005217EA /* Client+Rooms.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Client+Rooms.swift"; sourceTree = "<group>"; };
+		CBBC0F5F2B87CCE9005217EA /* Prefab+Accessories.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Prefab+Accessories.swift"; sourceTree = "<group>"; };
+		CBBC0F612B87CD6A005217EA /* Prefab+Rooms.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Prefab+Rooms.swift"; sourceTree = "<group>"; };
+		CBBC0F632B87D732005217EA /* Client+Accessories.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Client+Accessories.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -79,6 +139,16 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CB9C51912B7EB910007C1AD4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CB9C51B02B80ACE5007C1AD4 /* ArgumentParser in Frameworks */,
+				CB9C51A72B7EC005007C1AD4 /* HTTPTypes in Frameworks */,
+				CB9C51A92B7EC005007C1AD4 /* HTTPTypesFoundation in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -88,6 +158,7 @@
 				CB7818292B7D802B0077671A /* prefab */,
 				CB78183A2B7D802B0077671A /* prefabTests */,
 				CB7818442B7D802B0077671A /* prefabUITests */,
+				CB9C51952B7EB910007C1AD4 /* prefab-client */,
 				CB7818282B7D802B0077671A /* Products */,
 			);
 			sourceTree = "<group>";
@@ -95,9 +166,10 @@
 		CB7818282B7D802B0077671A /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				CB7818272B7D802B0077671A /* prefab.app */,
+				CB7818272B7D802B0077671A /* Prefab.app */,
 				CB7818372B7D802B0077671A /* prefabTests.xctest */,
 				CB7818412B7D802B0077671A /* prefabUITests.xctest */,
+				CB9C51942B7EB910007C1AD4 /* prefab */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -154,32 +226,66 @@
 		CB9C518D2B7D849D007C1AD4 /* model */ = {
 			isa = PBXGroup;
 			children = (
-				CB9C518E2B7D849D007C1AD4 /* HomeStore.swift */,
+				CB9C518E2B7D849D007C1AD4 /* HomeBase.swift */,
 			);
 			path = model;
+			sourceTree = "<group>";
+		};
+		CB9C51952B7EB910007C1AD4 /* prefab-client */ = {
+			isa = PBXGroup;
+			children = (
+				CBBC0F532B87A698005217EA /* Command */,
+				CBBC0F522B87A68B005217EA /* Client */,
+				CB9C51962B7EB910007C1AD4 /* Root.swift */,
+			);
+			path = "prefab-client";
+			sourceTree = "<group>";
+		};
+		CBBC0F522B87A68B005217EA /* Client */ = {
+			isa = PBXGroup;
+			children = (
+				CB9736B12B878F9A005BB6E6 /* Client.swift */,
+				CBBC0F542B87A6AA005217EA /* Client+Homes.swift */,
+				CBBC0F5D2B87CCD3005217EA /* Client+Rooms.swift */,
+				CBBC0F632B87D732005217EA /* Client+Accessories.swift */,
+			);
+			path = Client;
+			sourceTree = "<group>";
+		};
+		CBBC0F532B87A698005217EA /* Command */ = {
+			isa = PBXGroup;
+			children = (
+				CBBC0F5F2B87CCE9005217EA /* Prefab+Accessories.swift */,
+				CBBC0F562B87A6B4005217EA /* Prefab+Homes.swift */,
+				CBBC0F612B87CD6A005217EA /* Prefab+Rooms.swift */,
+			);
+			path = Command;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		CB7818262B7D802B0077671A /* prefab */ = {
+		CB7818262B7D802B0077671A /* Prefab */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = CB78184B2B7D802B0077671A /* Build configuration list for PBXNativeTarget "prefab" */;
+			buildConfigurationList = CB78184B2B7D802B0077671A /* Build configuration list for PBXNativeTarget "Prefab" */;
 			buildPhases = (
 				CB7818232B7D802B0077671A /* Sources */,
 				CB7818242B7D802B0077671A /* Frameworks */,
 				CB7818252B7D802B0077671A /* Resources */,
+				CB9C51A02B7EBC2F007C1AD4 /* CopyFiles */,
+				CB9C51A32B7EBEA6007C1AD4 /* CopyFiles */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				CB9C519D2B7EBB52007C1AD4 /* PBXTargetDependency */,
 			);
-			name = prefab;
+			name = Prefab;
 			packageProductDependencies = (
 				CB78185A2B7D812E0077671A /* Hummingbird */,
 			);
 			productName = prefab;
-			productReference = CB7818272B7D802B0077671A /* prefab.app */;
+			productReference = CB7818272B7D802B0077671A /* Prefab.app */;
 			productType = "com.apple.product-type.application";
 		};
 		CB7818362B7D802B0077671A /* prefabTests */ = {
@@ -218,6 +324,28 @@
 			productReference = CB7818412B7D802B0077671A /* prefabUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
+		CB9C51932B7EB910007C1AD4 /* prefab */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CB9C51982B7EB910007C1AD4 /* Build configuration list for PBXNativeTarget "prefab" */;
+			buildPhases = (
+				CB9C51902B7EB910007C1AD4 /* Sources */,
+				CB9C51912B7EB910007C1AD4 /* Frameworks */,
+				CB9C51922B7EB910007C1AD4 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = prefab;
+			packageProductDependencies = (
+				CB9C51A62B7EC005007C1AD4 /* HTTPTypes */,
+				CB9C51A82B7EC005007C1AD4 /* HTTPTypesFoundation */,
+				CB9C51AF2B80ACE5007C1AD4 /* ArgumentParser */,
+			);
+			productName = "prefab-client";
+			productReference = CB9C51942B7EB910007C1AD4 /* prefab */;
+			productType = "com.apple.product-type.tool";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -239,6 +367,9 @@
 						CreatedOnToolsVersion = 15.2;
 						TestTargetID = CB7818262B7D802B0077671A;
 					};
+					CB9C51932B7EB910007C1AD4 = {
+						CreatedOnToolsVersion = 15.2;
+					};
 				};
 			};
 			buildConfigurationList = CB7818222B7D802A0077671A /* Build configuration list for PBXProject "prefab" */;
@@ -252,14 +383,17 @@
 			mainGroup = CB78181E2B7D802A0077671A;
 			packageReferences = (
 				CB7818592B7D812E0077671A /* XCRemoteSwiftPackageReference "hummingbird" */,
+				CB9C51A52B7EC005007C1AD4 /* XCRemoteSwiftPackageReference "swift-http-types" */,
+				CB9C51AE2B80ACE5007C1AD4 /* XCRemoteSwiftPackageReference "swift-argument-parser" */,
 			);
 			productRefGroup = CB7818282B7D802B0077671A /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				CB7818262B7D802B0077671A /* prefab */,
+				CB7818262B7D802B0077671A /* Prefab */,
 				CB7818362B7D802B0077671A /* prefabTests */,
 				CB7818402B7D802B0077671A /* prefabUITests */,
+				CB9C51932B7EB910007C1AD4 /* prefab */,
 			);
 		};
 /* End PBXProject section */
@@ -299,7 +433,7 @@
 				CB9C518A2B7D8493007C1AD4 /* Data.swift in Sources */,
 				CB9C518C2B7D8493007C1AD4 /* Routes.swift in Sources */,
 				CB9C518B2B7D8493007C1AD4 /* Server.swift in Sources */,
-				CB9C518F2B7D849D007C1AD4 /* HomeStore.swift in Sources */,
+				CB9C518F2B7D849D007C1AD4 /* HomeBase.swift in Sources */,
 				CB78182B2B7D802B0077671A /* prefabApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -321,18 +455,39 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CB9C51902B7EB910007C1AD4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CBBC0F622B87CD6A005217EA /* Prefab+Rooms.swift in Sources */,
+				CB9C51AB2B7ECC3B007C1AD4 /* Data.swift in Sources */,
+				CB9C51972B7EB910007C1AD4 /* Root.swift in Sources */,
+				CBBC0F5B2B87A9F8005217EA /* Client.swift in Sources */,
+				CBBC0F5E2B87CCD3005217EA /* Client+Rooms.swift in Sources */,
+				CBBC0F602B87CCE9005217EA /* Prefab+Accessories.swift in Sources */,
+				CBBC0F642B87D732005217EA /* Client+Accessories.swift in Sources */,
+				CBBC0F5C2B87A9FA005217EA /* Client+Homes.swift in Sources */,
+				CBBC0F5A2B87A9F6005217EA /* Prefab+Homes.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
 		CB7818392B7D802B0077671A /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = CB7818262B7D802B0077671A /* prefab */;
+			target = CB7818262B7D802B0077671A /* Prefab */;
 			targetProxy = CB7818382B7D802B0077671A /* PBXContainerItemProxy */;
 		};
 		CB7818432B7D802B0077671A /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = CB7818262B7D802B0077671A /* prefab */;
+			target = CB7818262B7D802B0077671A /* Prefab */;
 			targetProxy = CB7818422B7D802B0077671A /* PBXContainerItemProxy */;
+		};
+		CB9C519D2B7EBB52007C1AD4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CB9C51932B7EB910007C1AD4 /* prefab */;
+			targetProxy = CB9C519C2B7EBB52007C1AD4 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -462,6 +617,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = prefab/prefab.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"prefab/Preview Content\"";
@@ -481,6 +637,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.kellyp.prefab;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
@@ -496,6 +653,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = prefab/prefab.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"prefab/Preview Content\"";
@@ -515,6 +673,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.kellyp.prefab;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
@@ -596,6 +755,34 @@
 			};
 			name = Release;
 		};
+		CB9C51992B7EB910007C1AD4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = X799XV22B8;
+				ENABLE_HARDENED_RUNTIME = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.2;
+				"PRODUCT_BUNDLE_IDENTIFIER[sdk=macosx*]" = com.kellyp.prefab;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		CB9C519A2B7EB910007C1AD4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = X799XV22B8;
+				ENABLE_HARDENED_RUNTIME = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.2;
+				"PRODUCT_BUNDLE_IDENTIFIER[sdk=macosx*]" = com.kellyp.prefab;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -608,7 +795,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		CB78184B2B7D802B0077671A /* Build configuration list for PBXNativeTarget "prefab" */ = {
+		CB78184B2B7D802B0077671A /* Build configuration list for PBXNativeTarget "Prefab" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CB78184C2B7D802B0077671A /* Debug */,
@@ -635,6 +822,15 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		CB9C51982B7EB910007C1AD4 /* Build configuration list for PBXNativeTarget "prefab" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CB9C51992B7EB910007C1AD4 /* Debug */,
+				CB9C519A2B7EB910007C1AD4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
@@ -646,6 +842,22 @@
 				minimumVersion = 1.12.0;
 			};
 		};
+		CB9C51A52B7EC005007C1AD4 /* XCRemoteSwiftPackageReference "swift-http-types" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-http-types.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.3;
+			};
+		};
+		CB9C51AE2B80ACE5007C1AD4 /* XCRemoteSwiftPackageReference "swift-argument-parser" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-argument-parser.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.3.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -653,6 +865,21 @@
 			isa = XCSwiftPackageProductDependency;
 			package = CB7818592B7D812E0077671A /* XCRemoteSwiftPackageReference "hummingbird" */;
 			productName = Hummingbird;
+		};
+		CB9C51A62B7EC005007C1AD4 /* HTTPTypes */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CB9C51A52B7EC005007C1AD4 /* XCRemoteSwiftPackageReference "swift-http-types" */;
+			productName = HTTPTypes;
+		};
+		CB9C51A82B7EC005007C1AD4 /* HTTPTypesFoundation */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CB9C51A52B7EC005007C1AD4 /* XCRemoteSwiftPackageReference "swift-http-types" */;
+			productName = HTTPTypesFoundation;
+		};
+		CB9C51AF2B80ACE5007C1AD4 /* ArgumentParser */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CB9C51AE2B80ACE5007C1AD4 /* XCRemoteSwiftPackageReference "swift-argument-parser" */;
+			productName = ArgumentParser;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

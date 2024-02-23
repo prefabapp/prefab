@@ -9,23 +9,43 @@ import Foundation
 import OSLog
 import Hummingbird
 
+struct HomeKitAuthLogger: HBMiddleware {
+    func apply(to request: HBRequest, next: HBResponder) -> EventLoopFuture<HBResponse> {
+        let homebase = HomeBase()
+        let stats = homebase.homeManager.authorizationStatus
+        Logger().debug("HomeKit Authorization status is \(stats.rawValue)")
+        if !homebase.homeManager.authorizationStatus.contains(.authorized) {
+            let failure: EventLoopFuture<HBResponse> = request.failure(.forbidden, message: "{\"error\": \"Prefab is not authorized to access your HomeKit data.\"}")
+            
+            return failure
+        }
+        return next.respond(to: request)
+    }
+}
+
 class Server  {
-    var homeStore: HomeStore
+    var homeBase: HomeBase
     init() {
-        homeStore = HomeStore()
-        let serverTread = Thread.init(target: self, selector: #selector(startServer), object: HomeStore())
+        homeBase = HomeBase()
+        let serverTread = Thread.init(target: self, selector: #selector(startServer), object: HomeBase())
         serverTread.start()
     }
     
     @objc
-    func startServer(homeStore: HomeStore) {
+    func startServer(homeStore: HomeBase) {
         Task{
             let app = HBApplication(configuration: .init(address: .hostname("127.0.0.1", port: 8080)))
-            app.router.get("homes", use: self.getHomes) 
+            app.logger.logLevel = .debug
+            app.middleware.add(HBLogRequestsMiddleware(.debug))
+            app.middleware.add(HomeKitAuthLogger())
+            app.router.get("homes", use: self.getHomes)
             app.router.get("homes/:home", use: self.getHome)
            
             app.router.get("rooms/:home", use: self.getRooms)
             app.router.get("rooms/:home/:room", use: self.getRoom)
+            
+            app.router.get("accessories/:home/:room", use: self.getAccessories)
+            app.router.get("accessories/:home/:room/:accessory", use: self.getAccessory)
             
             
             try app.start()
