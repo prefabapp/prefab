@@ -19,7 +19,7 @@ struct Prefab: AsyncParsableCommand {
         discussion: """
             Prints to stdout forever, or until you halt the program.
             """,
-        subcommands: [GetHomes.self, GetHome.self, GetRooms.self, GetRoom.self, GetAccessory.self, GetAccessories.self])
+        subcommands: [GetHomes.self, GetHome.self, GetRooms.self, GetRoom.self, GetAccessory.self, GetAccessories.self, UpdateAccessory.self])
 
     static let client: Client = Client.initShared(host: "localhost", port: "8080", scheme: "http")
     

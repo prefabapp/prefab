@@ -46,6 +46,7 @@ class Server  {
             
             app.router.get("accessories/:home/:room", use: self.getAccessories)
             app.router.get("accessories/:home/:room/:accessory", use: self.getAccessory)
+            app.router.put("accessories", use: self.updateAccessoryCharacteristic)
             
             
             try app.start()

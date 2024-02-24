@@ -74,4 +74,27 @@ public class Client {
         }
         return body
     }
+    
+    func put(path: String, data: Codable) async throws -> String {
+        let json = try JSONEncoder().encode(data)
+        
+        let request = HTTPRequest(method: .put, scheme: self.scheme, authority: "\(self.host):\(self.port)", path: path)
+        let (data, response) = try await URLSession.shared.upload(for: URLRequest(httpRequest: request)!, from: json)
+        let body = String(decoding: data, as: UTF8.self)
+        if let httpResponse = response as? HTTPURLResponse {
+            guard httpResponse.httpResponse!.status == .ok else {
+                switch httpResponse.httpResponse!.status {
+                case .notFound:
+                    throw HTTPResponseError.notFound(response: body)
+                case .tooManyRequests:
+                    throw HTTPResponseError.tooManyRequests(response: body)
+                case .forbidden:
+                    throw HTTPResponseError.forbidden(response: body)
+                default:
+                    throw HTTPResponseError.unexpected(response: body, code: httpResponse.httpResponse!.status.code)
+                }
+            }
+        }
+        return body
+    }
 }
