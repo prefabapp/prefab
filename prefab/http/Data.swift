@@ -75,10 +75,21 @@ struct CharacteristicMetadata: Encodable, Decodable {
 }
 
 struct UpdateAccessoryInput: Encodable, Decodable {
-    var home: String
-    var room: String
-    var accessory: String
     var serviceId: String
     var characteristicId: String
     var value: String
+}
+
+enum UnknownFormatError : Error {
+    case formatValue(format: String)
+}
+
+func GetValue(value: String, format: String) throws -> Any {
+    switch format {
+    case "bool":
+        let trues: [String] = ["1", "true", "on"]
+        return trues.contains(where: { $0.lowercased() == value.lowercased() } )
+    default:
+        throw UnknownFormatError.formatValue(format: format)
+    }
 }

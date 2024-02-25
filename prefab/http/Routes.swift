@@ -169,7 +169,7 @@ extension Server {
     
 
     
-    func updateAccessoryCharacteristic(_ request: HBRequest) throws -> String {
+    func updateAccessory(_ request: HBRequest) throws -> String {
         var updateAccessoryInput: UpdateAccessoryInput
         do {
             updateAccessoryInput = try JSONDecoder().decode(UpdateAccessoryInput.self, from: request.body.buffer!)
@@ -180,33 +180,33 @@ extension Server {
             )
         }
         
-//        guard let homeName = request.parameters["home"] else {
-//            throw HBHTTPError(
-//                .badRequest,
-//                message: "Invalid name parameter."
-//            )
-//        }
-//        guard let roomName = request.parameters["room"] else {
-//            throw HBHTTPError(
-//                .badRequest,
-//                message: "Invalid name parameter."
-//            )
-//        }
-//        guard let accessoryName = request.parameters["accessory"] else {
-//            throw HBHTTPError(
-//                .badRequest,
-//                message: "Invalid name parameter."
-//            )
-//        }
-        let home = homeBase.homes.first(where: {$0.name == updateAccessoryInput.home.removingPercentEncoding})
+        guard let homeName = request.parameters["home"] else {
+            throw HBHTTPError(
+                .badRequest,
+                message: "Invalid name parameter."
+            )
+        }
+        guard let roomName = request.parameters["room"] else {
+            throw HBHTTPError(
+                .badRequest,
+                message: "Invalid name parameter."
+            )
+        }
+        guard let accessoryName = request.parameters["accessory"] else {
+            throw HBHTTPError(
+                .badRequest,
+                message: "Invalid name parameter."
+            )
+        }
+        let home = homeBase.homes.first(where: {$0.name == homeName.removingPercentEncoding})
         if (home == nil) {
             throw HBHTTPError(.notFound)
         }
-        let room = home?.rooms.first(where: {$0.name == updateAccessoryInput.room.removingPercentEncoding})
+        let room = home?.rooms.first(where: {$0.name == roomName.removingPercentEncoding})
         if (room == nil) {
             throw HBHTTPError(.notFound)
         }
-        let hkAccessory = room?.accessories.first(where: { (hmAccessory: HMAccessory) -> Bool in hmAccessory.name == updateAccessoryInput.accessory.removingPercentEncoding})
+        let hkAccessory = room?.accessories.first(where: { (hmAccessory: HMAccessory) -> Bool in hmAccessory.name == accessoryName.removingPercentEncoding})
         if (hkAccessory == nil) {
             throw HBHTTPError(.notFound)
         }
@@ -226,23 +226,11 @@ extension Server {
 
         Logger().debug("Writing \(updateAccessoryInput.value) to \(hkChar)")
         
-        var anyValue: Any
-        switch hkChar?.metadata?.format {
-        case "bool":
-            anyValue = updateAccessoryInput.value.boolValue
-        default:
-            anyValue = updateAccessoryInput.value
-        }
-        
         let group = DispatchGroup()
         group.enter()
-        hkChar?.writeValue(anyValue, completionHandler: { (error: Error?) -> Void in defer {group.leave()}; Logger().error("\(String(describing: error))") })
+        hkChar?.writeValue(try GetValue(value: updateAccessoryInput.value, format: hkChar?.metadata?.format ?? ""), completionHandler: { (error: Error?) -> Void in defer {group.leave()}; Logger().error("\(String(describing: error))") })
         group.wait()
 
         return "" //json!
     }
 }
-extension String {
-var boolValue: Bool {
-    return (self as NSString).boolValue
-}}

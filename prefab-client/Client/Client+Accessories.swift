@@ -13,12 +13,12 @@ extension Client {
     }
     
     public func getAccessory(name: String, home: String, room: String) async throws -> String {
-        return try await get(path: "/accessories/\(home)/\(room)/\(name)")
+        return try await get(path: "/accessories/\(home)/\(room)/\(name.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!)")
     }
     
     public func updateAccessory(name: String, home: String, room: String, serviceId: String, characteristicId: String, value: Any) async throws -> String {
-        let updateAccessoryInput: UpdateAccessoryInput = UpdateAccessoryInput(home: home, room: room, accessory: name, serviceId: serviceId, characteristicId: characteristicId, value: value as! String)
-        return try await put(path: "/accessories", data: updateAccessoryInput)
+        let updateAccessoryInput: UpdateAccessoryInput = UpdateAccessoryInput(serviceId: serviceId, characteristicId: characteristicId, value: value as! String)
+        return try await put(path: "/accessories/\(home)/\(room)/\(name.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)!)", data: updateAccessoryInput)
     }
 }
 
