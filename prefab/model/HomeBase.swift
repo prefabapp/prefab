@@ -32,4 +32,8 @@ class HomeBase: NSObject, ObservableObject, HMHomeManagerDelegate {
         Logger().log("Homes: \(manager.homes)")
         homes = manager.homes
     }
+    
+    func getHomes() {
+        
+    }
 }

@@ -78,6 +78,7 @@ DerivedData/
 
 build/
 
+default.profraw
 
 #####
 # Xcode private settings (window sizes, bookmarks, breakpoints, custom executables, smart groups)

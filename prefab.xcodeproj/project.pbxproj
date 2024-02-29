@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A28EE47D2B8C29010042FAA0 /* Routes+Homes.swift in Sources */ = {isa = PBXBuildFile; fileRef = A28EE47C2B8C29010042FAA0 /* Routes+Homes.swift */; };
+		A28EE47F2B8C29610042FAA0 /* Routes+Rooms.swift in Sources */ = {isa = PBXBuildFile; fileRef = A28EE47E2B8C29610042FAA0 /* Routes+Rooms.swift */; };
+		A28EE4812B8C29AE0042FAA0 /* Routes+Accessories.swift in Sources */ = {isa = PBXBuildFile; fileRef = A28EE4802B8C29AE0042FAA0 /* Routes+Accessories.swift */; };
 		CB78182B2B7D802B0077671A /* prefabApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB78182A2B7D802B0077671A /* prefabApp.swift */; };
 		CB78182D2B7D802B0077671A /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB78182C2B7D802B0077671A /* ContentView.swift */; };
 		CB78182F2B7D802B0077671A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CB78182E2B7D802B0077671A /* Assets.xcassets */; };
@@ -90,6 +93,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		A28EE47C2B8C29010042FAA0 /* Routes+Homes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Routes+Homes.swift"; sourceTree = "<group>"; };
+		A28EE47E2B8C29610042FAA0 /* Routes+Rooms.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Routes+Rooms.swift"; sourceTree = "<group>"; };
+		A28EE4802B8C29AE0042FAA0 /* Routes+Accessories.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Routes+Accessories.swift"; sourceTree = "<group>"; };
 		CB7818272B7D802B0077671A /* Prefab.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Prefab.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CB78182A2B7D802B0077671A /* prefabApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = prefabApp.swift; sourceTree = "<group>"; };
 		CB78182C2B7D802B0077671A /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -219,6 +225,9 @@
 				CB9C51872B7D8493007C1AD4 /* Data.swift */,
 				CB9C51882B7D8493007C1AD4 /* Server.swift */,
 				CB9C51892B7D8493007C1AD4 /* Routes.swift */,
+				A28EE4802B8C29AE0042FAA0 /* Routes+Accessories.swift */,
+				A28EE47C2B8C29010042FAA0 /* Routes+Homes.swift */,
+				A28EE47E2B8C29610042FAA0 /* Routes+Rooms.swift */,
 			);
 			path = http;
 			sourceTree = "<group>";
@@ -431,7 +440,10 @@
 			files = (
 				CB78182D2B7D802B0077671A /* ContentView.swift in Sources */,
 				CB9C518A2B7D8493007C1AD4 /* Data.swift in Sources */,
+				A28EE47F2B8C29610042FAA0 /* Routes+Rooms.swift in Sources */,
+				A28EE4812B8C29AE0042FAA0 /* Routes+Accessories.swift in Sources */,
 				CB9C518C2B7D8493007C1AD4 /* Routes.swift in Sources */,
+				A28EE47D2B8C29010042FAA0 /* Routes+Homes.swift in Sources */,
 				CB9C518B2B7D8493007C1AD4 /* Server.swift in Sources */,
 				CB9C518F2B7D849D007C1AD4 /* HomeBase.swift in Sources */,
 				CB78182B2B7D802B0077671A /* prefabApp.swift in Sources */,

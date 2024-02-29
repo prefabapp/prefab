@@ -31,6 +31,16 @@ class Server  {
         serverTread.start()
     }
     
+    func getRequiredParam(param: String, request: HBRequest) throws -> String {
+        guard let value = request.parameters[param] else {
+            throw HBHTTPError(
+                .badRequest,
+                message: "Invalid \(param) parameter."
+            )
+        }
+        return value
+    }
+    
     @objc
     func startServer(homeStore: HomeBase) {
         Task{
