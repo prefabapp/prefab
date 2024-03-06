@@ -23,7 +23,6 @@
 		CB9C518C2B7D8493007C1AD4 /* Routes.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9C51892B7D8493007C1AD4 /* Routes.swift */; };
 		CB9C518F2B7D849D007C1AD4 /* HomeBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9C518E2B7D849D007C1AD4 /* HomeBase.swift */; };
 		CB9C51972B7EB910007C1AD4 /* Root.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9C51962B7EB910007C1AD4 /* Root.swift */; };
-		CB9C51A42B7EBEB8007C1AD4 /* prefab in CopyFiles */ = {isa = PBXBuildFile; fileRef = CB9C51942B7EB910007C1AD4 /* prefab */; };
 		CB9C51A72B7EC005007C1AD4 /* HTTPTypes in Frameworks */ = {isa = PBXBuildFile; productRef = CB9C51A62B7EC005007C1AD4 /* HTTPTypes */; };
 		CB9C51A92B7EC005007C1AD4 /* HTTPTypesFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = CB9C51A82B7EC005007C1AD4 /* HTTPTypesFoundation */; };
 		CB9C51AB2B7ECC3B007C1AD4 /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB9C51872B7D8493007C1AD4 /* Data.swift */; };
@@ -77,16 +76,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 7;
 			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		CB9C51A32B7EBEA6007C1AD4 /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = /opt/homebrew/bin;
-			dstSubfolderSpec = 0;
-			files = (
-				CB9C51A42B7EBEB8007C1AD4 /* prefab in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -282,7 +271,6 @@
 				CB7818242B7D802B0077671A /* Frameworks */,
 				CB7818252B7D802B0077671A /* Resources */,
 				CB9C51A02B7EBC2F007C1AD4 /* CopyFiles */,
-				CB9C51A32B7EBEA6007C1AD4 /* CopyFiles */,
 			);
 			buildRules = (
 			);
