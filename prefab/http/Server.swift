@@ -27,8 +27,8 @@ class Server  {
     var homeBase: HomeBase
     init() {
         homeBase = HomeBase()
-        let serverTread = Thread.init(target: self, selector: #selector(startServer), object: HomeBase())
-        serverTread.start()
+        let serverThread = Thread.init(target: self, selector: #selector(startServer), object: HomeBase())
+        serverThread.start()
     }
     
     func getRequiredParam(param: String, request: HBRequest) throws -> String {
