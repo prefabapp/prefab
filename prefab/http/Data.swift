@@ -36,6 +36,7 @@ struct Accessory: Encodable, Decodable {
 struct Service: Encodable, Decodable {
     var uniqueIdentifier: UUID
     var name: String
+    var typeName: String
     var type: String
     var isPrimary: Bool
     var isUserInteractive: Bool
@@ -48,6 +49,7 @@ struct Characteristic: Encodable, Decodable {
     var uniqueIdentifier: UUID
     var description: String
     var properties: [String]
+    var typeName: String
     var type: String
     var metadata: CharacteristicMetadata?
     var value: String?

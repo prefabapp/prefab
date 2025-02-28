@@ -12,7 +12,6 @@ extension HMHome: Identifiable {}
 
 struct ContentView: View {
     @StateObject var homebase: HomeBase
-    
     var body: some View {
         VStack {
             Image(systemName: "homekit")

@@ -13,7 +13,7 @@ struct HomeKitAuthLogger: HBMiddleware {
     func apply(to request: HBRequest, next: HBResponder) -> EventLoopFuture<HBResponse> {
         let homebase = HomeBase()
         let stats = homebase.homeManager.authorizationStatus
-        Logger().debug("HomeKit Authorization status is \(stats.rawValue)")
+        Logger().log("HomeKit Authorization status is \(stats.rawValue)")
         if !homebase.homeManager.authorizationStatus.contains(.authorized) {
             let failure: EventLoopFuture<HBResponse> = request.failure(.forbidden, message: "{\"error\": \"Prefab is not authorized to access your HomeKit data.\"}")
             

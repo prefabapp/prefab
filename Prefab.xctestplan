@@ -1,0 +1,37 @@
+{
+  "configurations" : [
+    {
+      "id" : "8B6AB0A6-6920-438D-AD45-ED35CCE24301",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:prefab.xcodeproj",
+      "identifier" : "CB7818262B7D802B0077671A",
+      "name" : "Prefab"
+    }
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:prefab.xcodeproj",
+        "identifier" : "CB7818362B7D802B0077671A",
+        "name" : "prefabTests"
+      }
+    },
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:prefab.xcodeproj",
+        "identifier" : "CB7818402B7D802B0077671A",
+        "name" : "prefabUITests"
+      }
+    }
+  ],
+  "version" : 1
+}

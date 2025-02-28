@@ -6,7 +6,7 @@
 //
 
 import XCTest
-@testable import prefab
+//@testable import prefab
 
 final class prefabTests: XCTestCase {
 

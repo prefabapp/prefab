@@ -61,7 +61,7 @@ extension Server {
         group.wait()
 
         let accessory = Accessory(
-            home: home!.name,  room: room!.name, name: hkAccessory!.name, category: hkAccessory!.category.categoryType, isReachable: hkAccessory!.isReachable, supportsIdentify: hkAccessory!.supportsIdentify, isBridged: hkAccessory!.isBridged, services: hkAccessory!.services.map{ (service: HMService) -> Service in Service(uniqueIdentifier: service.uniqueIdentifier, name: service.name, type: service.serviceType, isPrimary: service.isPrimaryService, isUserInteractive: service.isUserInteractive, associatedType: service.associatedServiceType, characteristics: service.characteristics.map{ (char: HMCharacteristic) -> Characteristic in Characteristic(uniqueIdentifier: char.uniqueIdentifier,  description: char.localizedDescription, properties: char.properties, type: char.characteristicType, metadata: CharacteristicMetadata(manufacturerDescription: char.metadata?.manufacturerDescription, validValues: char.metadata?.validValues?.map{ (number: NSNumber) -> String in return number.stringValue}, minimumValue: char.metadata?.minimumValue?.stringValue, maximumValue: char.metadata?.maximumValue?.stringValue, stepValue: char.metadata?.stepValue?.stringValue, maxLength: char.metadata?.maxLength?.stringValue, format: char.metadata?.format, units: char.metadata?.units), value: "\(char.value ?? "")" )}) }, firmwareVersion: hkAccessory!.firmwareVersion, manufacturer: hkAccessory!.manufacturer, model: hkAccessory!.model )
+            home: home!.name,  room: room!.name, name: hkAccessory!.name, category: hkAccessory!.category.localizedDescription, isReachable: hkAccessory!.isReachable, supportsIdentify: hkAccessory!.supportsIdentify, isBridged: hkAccessory!.isBridged, services: hkAccessory!.services.map{ (service: HMService) -> Service in Service(uniqueIdentifier: service.uniqueIdentifier, name: service.name, typeName: getHAPServiceInfo(fromUUIDString: service.serviceType)?.name ?? "", type: service.serviceType, isPrimary: service.isPrimaryService, isUserInteractive: service.isUserInteractive, associatedType: service.associatedServiceType, characteristics: service.characteristics.map{ (char: HMCharacteristic) -> Characteristic in Characteristic(uniqueIdentifier: char.uniqueIdentifier,  description: char.localizedDescription, properties: char.properties, typeName: getHAPCharacteristicInfo(fromUUIDString: char.characteristicType)?.name ?? "", type: char.characteristicType, metadata: CharacteristicMetadata(manufacturerDescription: char.metadata?.manufacturerDescription, validValues: char.metadata?.validValues?.map{ (number: NSNumber) -> String in return number.stringValue}, minimumValue: char.metadata?.minimumValue?.stringValue, maximumValue: char.metadata?.maximumValue?.stringValue, stepValue: char.metadata?.stepValue?.stringValue, maxLength: char.metadata?.maxLength?.stringValue, format: char.metadata?.format, units: char.metadata?.units), value: "\(char.value ?? "")" )}) }, firmwareVersion: hkAccessory!.firmwareVersion, manufacturer: hkAccessory!.manufacturer, model: hkAccessory!.model )
         
         let jsonEncoder = JSONEncoder()
         let jsonData = try jsonEncoder.encode(accessory)
@@ -69,8 +69,6 @@ extension Server {
         
         return json!
     }
-    
-
     
     func updateAccessory(_ request: HBRequest) throws -> String {
         var updateAccessoryInput: UpdateAccessoryInput
