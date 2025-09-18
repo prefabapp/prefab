@@ -35,6 +35,7 @@ sudo apt install -y \
     cmake \
     libcurl4-openssl-dev \
     libavahi-client-dev \
+    libavahi-common-dev \
     pkg-config \
     git
 ```
@@ -359,7 +360,7 @@ make -j$(nproc)
 1. Copy the built library and examples to your Raspberry Pi
 2. Install runtime dependencies:
    ```bash
-   sudo apt install libcurl4 libavahi-client3
+   sudo apt install libcurl4 libavahi-client3 libavahi-common3
    ```
 3. Run your application:
    ```bash
@@ -379,8 +380,9 @@ make -j$(nproc)
 - Verify C++17 compiler support
 
 ### mDNS Discovery Issues
-- Install Avahi on Linux: `sudo apt install libavahi-client-dev`
+- Install Avahi on Linux: `sudo apt install libavahi-client-dev libavahi-common-dev`
 - Enable Avahi daemon: `sudo systemctl enable avahi-daemon`
+- Start Avahi daemon: `sudo systemctl start avahi-daemon`
 - Check network allows multicast traffic
 
 ### Raspberry Pi Performance

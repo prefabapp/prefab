@@ -4,7 +4,15 @@
 #include <iostream>
 #include <nlohmann/json.hpp>
 
-#ifdef __linux__
+#ifdef HAVE_AVAHI
+#include <avahi-client/client.h>
+#include <avahi-client/lookup.h>
+#include <avahi-common/simple-watch.h>
+#include <avahi-common/malloc.h>
+#include <avahi-common/error.h>
+#include <arpa/inet.h>
+#include <netdb.h>
+#elif defined(__APPLE__)
 #include <dns_sd.h>
 #include <arpa/inet.h>
 #include <netdb.h>
@@ -243,25 +251,211 @@ namespace prefab {
         return updateAccessory(homeName, roomName, accessoryName, update);
     }
 
-#ifdef __linux__
-    // mDNS discovery implementation for Linux
-    bool PrefabClient::discoverService() {
-        // This is a simplified implementation. In a production system,
-        // you might want to use a more robust mDNS library like Avahi
+#ifdef HAVE_AVAHI
+    // Avahi discovery implementation for Linux
+    struct AvahiDiscoveryData {
+        ServiceDiscoveryCallback callback;
+        bool foundService;
+        AvahiSimplePoll* simple_poll;
+    };
+
+    static void resolve_callback(
+        AvahiServiceResolver *r,
+        AvahiIfIndex interface,
+        AvahiProtocol protocol,
+        AvahiResolverEvent event,
+        const char *name,
+        const char *type,
+        const char *domain,
+        const char *host_name,
+        const AvahiAddress *address,
+        uint16_t port,
+        AvahiStringList *txt,
+        AvahiLookupResultFlags flags,
+        void* userdata) {
         
-        // For now, we'll implement a basic timeout and return false
-        // The user can manually set the base URL
+        AvahiDiscoveryData* data = static_cast<AvahiDiscoveryData*>(userdata);
+        
+        switch (event) {
+            case AVAHI_RESOLVER_FAILURE:
+                break;
+                
+            case AVAHI_RESOLVER_FOUND: {
+                char addr_str[AVAHI_ADDRESS_STR_MAX];
+                avahi_address_snprint(addr_str, sizeof(addr_str), address);
+                
+                data->callback(std::string(addr_str), port);
+                data->foundService = true;
+                
+                // Stop polling after first service found
+                avahi_simple_poll_quit(data->simple_poll);
+                break;
+            }
+        }
+        
+        avahi_service_resolver_free(r);
+    }
+
+    static void browse_callback(
+        AvahiServiceBrowser *b,
+        AvahiIfIndex interface,
+        AvahiProtocol protocol,
+        AvahiBrowserEvent event,
+        const char *name,
+        const char *type,
+        const char *domain,
+        AvahiLookupResultFlags flags,
+        void* userdata) {
+        
+        AvahiDiscoveryData* data = static_cast<AvahiDiscoveryData*>(userdata);
+        AvahiClient* client = avahi_service_browser_get_client(b);
+        
+        switch (event) {
+            case AVAHI_BROWSER_FAILURE:
+                avahi_simple_poll_quit(data->simple_poll);
+                break;
+                
+            case AVAHI_BROWSER_NEW:
+                // Resolve the service
+                if (!(avahi_service_resolver_new(client, interface, protocol, name, type, domain, 
+                                               AVAHI_PROTO_UNSPEC, static_cast<AvahiLookupFlags>(0), 
+                                               resolve_callback, userdata))) {
+                    avahi_simple_poll_quit(data->simple_poll);
+                }
+                break;
+                
+            case AVAHI_BROWSER_REMOVE:
+            case AVAHI_BROWSER_ALL_FOR_NOW:
+            case AVAHI_BROWSER_CACHE_EXHAUSTED:
+                break;
+        }
+    }
+
+    static void client_callback(AvahiClient *c, AvahiClientState state, void *userdata) {
+        if (state == AVAHI_CLIENT_FAILURE) {
+            AvahiDiscoveryData* data = static_cast<AvahiDiscoveryData*>(userdata);
+            avahi_simple_poll_quit(data->simple_poll);
+        }
+    }
+
+    bool PrefabClient::discoverService() {
+        AvahiSimplePoll *simple_poll = avahi_simple_poll_new();
+        if (!simple_poll) return false;
+        
+        AvahiClient *client = avahi_client_new(avahi_simple_poll_get(simple_poll), 
+                                             static_cast<AvahiClientFlags>(0), 
+                                             client_callback, nullptr, nullptr);
+        if (!client) {
+            avahi_simple_poll_free(simple_poll);
+            return false;
+        }
+        
+        AvahiDiscoveryData data;
+        data.foundService = false;
+        data.simple_poll = simple_poll;
+        data.callback = [this](const std::string& hostname, int port) {
+            std::string url = "http://" + hostname + ":" + std::to_string(port);
+            this->discoveredBaseUrl_ = url;
+        };
+        
+        AvahiServiceBrowser *sb = avahi_service_browser_new(client, AVAHI_IF_UNSPEC, AVAHI_PROTO_UNSPEC, 
+                                                          "_prefab._tcp", nullptr, 
+                                                          static_cast<AvahiLookupFlags>(0), 
+                                                          browse_callback, &data);
+        if (!sb) {
+            avahi_client_free(client);
+            avahi_simple_poll_free(simple_poll);
+            return false;
+        }
+        
+        // Run for a limited time
+        struct timeval timeout = {5, 0}; // 5 seconds
+        int result = avahi_simple_poll_loop(simple_poll);
+        
+        avahi_service_browser_free(sb);
+        avahi_client_free(client);
+        avahi_simple_poll_free(simple_poll);
+        
+        return data.foundService;
+    }
+
+    bool PrefabClient::discoverServices(ServiceDiscoveryCallback callback, int timeoutMs) {
+        AvahiSimplePoll *simple_poll = avahi_simple_poll_new();
+        if (!simple_poll) return false;
+        
+        AvahiClient *client = avahi_client_new(avahi_simple_poll_get(simple_poll), 
+                                             static_cast<AvahiClientFlags>(0), 
+                                             client_callback, nullptr, nullptr);
+        if (!client) {
+            avahi_simple_poll_free(simple_poll);
+            return false;
+        }
+        
+        AvahiDiscoveryData data;
+        data.foundService = false;
+        data.simple_poll = simple_poll;
+        data.callback = callback;
+        
+        AvahiServiceBrowser *sb = avahi_service_browser_new(client, AVAHI_IF_UNSPEC, AVAHI_PROTO_UNSPEC, 
+                                                          "_prefab._tcp", nullptr, 
+                                                          static_cast<AvahiLookupFlags>(0), 
+                                                          browse_callback, &data);
+        if (!sb) {
+            avahi_client_free(client);
+            avahi_simple_poll_free(simple_poll);
+            return false;
+        }
+        
+        // Simple timeout handling - in production you'd want better timeout control
+        avahi_simple_poll_loop(simple_poll);
+        
+        avahi_service_browser_free(sb);
+        avahi_client_free(client);
+        avahi_simple_poll_free(simple_poll);
+        
+        return data.foundService;
+    }
+
+#elif defined(__APPLE__)
+    // Apple Bonjour implementation
+    bool PrefabClient::discoverService() {
+        // DNS-SD implementation for macOS would go here
         return false;
     }
 
     bool PrefabClient::discoverServices(ServiceDiscoveryCallback callback, int timeoutMs) {
-        // Simplified implementation - in production, use Avahi or similar
-        // For now, just try some common IPs and ports
-        
+        // DNS-SD implementation for macOS would go here
+        return false;
+    }
+
+#else
+    // Fallback implementation for other systems
+    bool PrefabClient::discoverService() {
+        // Try some common addresses manually
         std::vector<std::string> commonHosts = {
+            "localhost", "127.0.0.1",
             "192.168.1.100", "192.168.1.101", "192.168.1.102",
-            "192.168.0.100", "192.168.0.101", "192.168.0.102",
-            "10.0.0.100", "10.0.0.101", "10.0.0.102"
+            "192.168.0.100", "192.168.0.101", "192.168.0.102"
+        };
+        
+        for (const auto& host : commonHosts) {
+            std::string testUrl = "http://" + host + ":8080";
+            PrefabClient testClient(ClientConfig(testUrl));
+            if (testClient.testConnection()) {
+                discoveredBaseUrl_ = testUrl;
+                return true;
+            }
+        }
+        
+        return false;
+    }
+
+    bool PrefabClient::discoverServices(ServiceDiscoveryCallback callback, int timeoutMs) {
+        // Try some common addresses manually
+        std::vector<std::string> commonHosts = {
+            "localhost", "127.0.0.1",
+            "192.168.1.100", "192.168.1.101", "192.168.1.102",
+            "192.168.0.100", "192.168.0.101", "192.168.0.102"
         };
         
         for (const auto& host : commonHosts) {
@@ -274,15 +468,6 @@ namespace prefab {
             }
         }
         
-        return false;
-    }
-#else
-    // Fallback implementation for non-Linux systems
-    bool PrefabClient::discoverService() {
-        return false;
-    }
-
-    bool PrefabClient::discoverServices(ServiceDiscoveryCallback callback, int timeoutMs) {
         return false;
     }
 #endif
