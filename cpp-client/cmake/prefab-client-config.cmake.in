@@ -1,0 +1,18 @@
+@PACKAGE_INIT@
+
+include(CMakeFindDependencyMacro)
+
+# Find dependencies
+find_dependency(CURL REQUIRED)
+
+# Try to find nlohmann_json
+find_dependency(nlohmann_json 3.2.0 QUIET)
+if(NOT nlohmann_json_FOUND)
+    # If not found, the parent project should handle this with FetchContent
+    message(STATUS "nlohmann_json not found in config, parent project should provide it")
+endif()
+
+# Include targets
+include("${CMAKE_CURRENT_LIST_DIR}/prefab-client-targets.cmake")
+
+check_required_components(prefab-client)
