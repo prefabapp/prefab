@@ -21,6 +21,7 @@ extension Prefab {
                 """)
         mutating func run() async {
             do{
+                let client = try await Prefab.getClient()
                 let homes = try await client.getHomes()
                 print(homes)
             } catch UninitializeClientError.propertyIsNotSet(let property) {
@@ -52,6 +53,7 @@ extension Prefab {
                 """)
         mutating func run() async {
             do{
+                let client = try await Prefab.getClient()
                 let homes = try await client.getHome(name: home)
                 print(homes)
             } catch UninitializeClientError.propertyIsNotSet(let property) {

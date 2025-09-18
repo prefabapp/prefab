@@ -27,6 +27,7 @@ extension Prefab {
         
         mutating func run() async {
             do{
+                let client = try await Prefab.getClient()
                 let accessories = try await client.getAccessories(home: home, room: room)
                 print(accessories)
             } catch UninitializeClientError.propertyIsNotSet(let property) {
@@ -64,6 +65,7 @@ extension Prefab {
         
         mutating func run() async {
             do{
+                let client = try await Prefab.getClient()
                 let accData = try await client.getAccessory(name: accessory, home: home, room: room)
                 print(accData)
             } catch UninitializeClientError.propertyIsNotSet(let property) {
@@ -112,6 +114,7 @@ extension Prefab {
 //        0D84EB02-914A-5B90-BF23-EF27764F9438 B16D61DB-EFC7-5BA3-BBF0-101860D06D60
         mutating func run() async {
             do{
+                let client = try await Prefab.getClient()
                 let accData = try await client.updateAccessory(name: accessory, home: home, room: room, serviceId: serviceId, characteristicId: characteristicId, value: value)
                 print(accData)
             } catch UninitializeClientError.propertyIsNotSet(let property) {

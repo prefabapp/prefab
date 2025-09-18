@@ -8,8 +8,6 @@
 import SwiftUI
 import HomeKit
 
-extension HMHome: Identifiable {}
-
 struct ContentView: View {
     @StateObject var homebase: HomeBase
     var body: some View {
@@ -22,7 +20,7 @@ struct ContentView: View {
 
             Text("All your homes are belong to us!")
             
-            List(homebase.homeManager.homes) { home in
+            List(homebase.homeManager.homes, id: \.uniqueIdentifier) { home in
                 DetailView(isPrimary: home.isPrimary, name: home.name, id: home.uniqueIdentifier.uuidString)
             }.listStyle(.insetGrouped)
         }
@@ -30,9 +28,9 @@ struct ContentView: View {
 }
 
 struct DetailView: View {
-    @State var isPrimary: Bool
-    @State var name: String
-    @State var id: String
+    let isPrimary: Bool
+    let name: String
+    let id: String
     
     var body: some View {
         HStack {
@@ -40,11 +38,12 @@ struct DetailView: View {
                 .frame(width: 32.0, height: 32.0)
                 .clipped()
             VStack(alignment: .leading) {
-                Text($name.wrappedValue)
-                Text($id.wrappedValue).foregroundStyle(.secondary)
-                Toggle(isOn: ($isPrimary)) {
+                Text(name)
+                Text(id).foregroundStyle(.secondary)
+                Toggle(isOn: .constant(isPrimary)) {
                         Text("Primary").foregroundStyle(.secondary)
-                }.disabled(/*@START_MENU_TOKEN@*/true/*@END_MENU_TOKEN@*/)
+                }
+                .disabled(true)
             }
         }
     }
@@ -54,3 +53,4 @@ struct DetailView: View {
 //#Preview {
 //    ContentView()
 //}
+

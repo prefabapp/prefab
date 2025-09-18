@@ -9,6 +9,83 @@ import Foundation
 import HTTPTypes
 import HTTPTypesFoundation
 
+public enum ServiceDiscoveryError: Error {
+    case serviceNotFound
+    case discoveryTimeout
+    case invalidServiceData
+}
+
+class ServiceDiscoveryDelegate: NSObject, NetServiceBrowserDelegate, NetServiceDelegate {
+    var foundService: NetService?
+    var serviceBrowser: NetServiceBrowser
+    private var isResolving = false
+    private var discoveryCompletionHandler: ((Result<Client, ServiceDiscoveryError>) -> Void)?
+    
+    override init() {
+        serviceBrowser = NetServiceBrowser()
+        super.init()
+        serviceBrowser.delegate = self
+    }
+    
+    func discoverPrefabService() async throws -> Client {
+        return try await withCheckedThrowingContinuation { continuation in
+            self.discoveryCompletionHandler = { result in
+                continuation.resume(with: result)
+            }
+            serviceBrowser.searchForServices(ofType: "_http._tcp.", inDomain: "")
+            
+            // Set a timeout to prevent hanging indefinitely
+            DispatchQueue.global().asyncAfter(deadline: .now() + 5.0) {
+                if self.discoveryCompletionHandler != nil {
+                    self.discoveryCompletionHandler = nil
+                    continuation.resume(returning: Client.initShared(host: "localhost", port: "8080", scheme: "http"))
+                }
+            }
+        }
+    }
+    
+    // MARK: - NetServiceBrowserDelegate
+    
+    func netServiceBrowser(_ browser: NetServiceBrowser, didFind service: NetService, moreComing: Bool) {
+        // Check if this is a Prefab HomeKit Bridge service
+        if service.name.contains("Prefab HomeKit Bridge") {
+            foundService = service
+            service.delegate = self
+            isResolving = true
+            service.resolve(withTimeout: 10.0)
+        }
+    }
+    
+    func netServiceBrowser(_ browser: NetServiceBrowser, didNotSearch errorDict: [String : NSNumber]) {
+        serviceBrowser.stop()
+        discoveryCompletionHandler?(.failure(.serviceNotFound))
+        discoveryCompletionHandler = nil
+    }
+    
+    // MARK: - NetServiceDelegate
+    
+    func netServiceDidResolveAddress(_ sender: NetService) {
+        guard isResolving else { return }
+        isResolving = false
+        serviceBrowser.stop()
+        
+        if let hostName = sender.hostName {
+            discoveryCompletionHandler?(.success(Client.initShared(host: hostName, port: String(sender.port), scheme: "http")))
+        } else {
+            discoveryCompletionHandler?(.failure(.invalidServiceData))
+        }
+        discoveryCompletionHandler = nil
+    }
+    
+    func netService(_ sender: NetService, didNotResolve errorDict: [String : NSNumber]) {
+        guard isResolving else { return }
+        isResolving = false
+        serviceBrowser.stop()
+        discoveryCompletionHandler?(.failure(.serviceNotFound))
+        discoveryCompletionHandler = nil
+    }
+}
+
 public enum HTTPResponseError: Error {
     // Throw when a response is not found
     case notFound(response: String)
@@ -40,6 +117,11 @@ public class Client {
         shared.scheme = scheme
         
         return shared
+    }
+    
+    static func initSharedWithDiscovery() async throws -> Client {
+        let discovery = ServiceDiscoveryDelegate()
+        return try await discovery.discoverPrefabService()
     }
     
     static func getShared() throws -> Client {
