@@ -261,17 +261,17 @@ namespace prefab {
 
     static void resolve_callback(
         AvahiServiceResolver *r,
-        AvahiIfIndex interface,
-        AvahiProtocol protocol,
+        [[maybe_unused]] AvahiIfIndex interface,
+        [[maybe_unused]] AvahiProtocol protocol,
         AvahiResolverEvent event,
-        const char *name,
-        const char *type,
-        const char *domain,
-        const char *host_name,
+        [[maybe_unused]] const char *name,
+        [[maybe_unused]] const char *type,
+        [[maybe_unused]] const char *domain,
+        [[maybe_unused]] const char *host_name,
         const AvahiAddress *address,
         uint16_t port,
-        AvahiStringList *txt,
-        AvahiLookupResultFlags flags,
+        [[maybe_unused]] AvahiStringList *txt,
+        [[maybe_unused]] AvahiLookupResultFlags flags,
         void* userdata) {
         
         AvahiDiscoveryData* data = static_cast<AvahiDiscoveryData*>(userdata);
@@ -304,7 +304,7 @@ namespace prefab {
         const char *name,
         const char *type,
         const char *domain,
-        AvahiLookupResultFlags flags,
+        [[maybe_unused]] AvahiLookupResultFlags flags,
         void* userdata) {
         
         AvahiDiscoveryData* data = static_cast<AvahiDiscoveryData*>(userdata);
@@ -331,7 +331,7 @@ namespace prefab {
         }
     }
 
-    static void client_callback(AvahiClient *c, AvahiClientState state, void *userdata) {
+    static void client_callback([[maybe_unused]] AvahiClient *c, AvahiClientState state, void *userdata) {
         if (state == AVAHI_CLIENT_FAILURE) {
             AvahiDiscoveryData* data = static_cast<AvahiDiscoveryData*>(userdata);
             avahi_simple_poll_quit(data->simple_poll);
@@ -369,8 +369,8 @@ namespace prefab {
         }
         
         // Run for a limited time
-        struct timeval timeout = {5, 0}; // 5 seconds
-        int result = avahi_simple_poll_loop(simple_poll);
+        [[maybe_unused]] struct timeval timeout = {5, 0}; // 5 seconds
+        [[maybe_unused]] int result = avahi_simple_poll_loop(simple_poll);
         
         avahi_service_browser_free(sb);
         avahi_client_free(client);
@@ -379,7 +379,7 @@ namespace prefab {
         return data.foundService;
     }
 
-    bool PrefabClient::discoverServices(ServiceDiscoveryCallback callback, int timeoutMs) {
+    bool PrefabClient::discoverServices(ServiceDiscoveryCallback callback, [[maybe_unused]] int timeoutMs) {
         AvahiSimplePoll *simple_poll = avahi_simple_poll_new();
         if (!simple_poll) return false;
         
