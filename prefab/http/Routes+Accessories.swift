@@ -80,6 +80,13 @@ extension Server {
             throw HBHTTPError(.badRequest, message: "Missing request body.")
         }
 
+        // Log raw request body for debugging
+        if let rawJSON = bodyBuffer.getString(at: bodyBuffer.readerIndex, length: bodyBuffer.readableBytes) {
+            logger.debug("Raw request body: \(rawJSON, privacy: .public)")
+        } else {
+            logger.debug("Raw request body could not be decoded as UTF-8. Byte count: \(bodyBuffer.readableBytes, privacy: .public)")
+        }
+
         // Decode input
         let updateAccessoryInput: UpdateAccessoryInput
         do {

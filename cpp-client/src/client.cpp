@@ -254,11 +254,13 @@ namespace prefab {
             throw PrefabException("Accessory has no services");
         }
         
-        // Find the characteristic with the matching type
+        // Find the characteristic with the matching type and get both service and characteristic IDs
+        std::string serviceId;
         std::string characteristicId;
         for (const auto& service : accessory.services.value()) {
             for (const auto& characteristic : service.characteristics) {
                 if (characteristic.type == characteristicType) {
+                    serviceId = service.uniqueIdentifier;
                     characteristicId = characteristic.uniqueIdentifier;
                     break;
                 }
@@ -270,9 +272,10 @@ namespace prefab {
             throw PrefabException("Characteristic type not found: " + characteristicType);
         }
         
-        // Create update request
+        // Create update request with both serviceId and characteristicId to match Swift server API
         UpdateAccessoryInput update;
-        update.characteristicUniqueIdentifier = characteristicId;
+        update.serviceId = serviceId;
+        update.characteristicId = characteristicId;
         update.value = value;
         
         return updateAccessory(homeName, roomName, accessoryName, update);

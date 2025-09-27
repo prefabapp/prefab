@@ -210,13 +210,15 @@ namespace prefab {
 
     /**
      * @brief Input structure for updating accessory characteristics
+     * Matches the Swift server API: {serviceId, characteristicId, value}
      */
     struct UpdateAccessoryInput {
-        std::string characteristicUniqueIdentifier;
+        std::string serviceId;
+        std::string characteristicId;
         std::string value;
 
         NLOHMANN_DEFINE_TYPE_INTRUSIVE(UpdateAccessoryInput,
-            characteristicUniqueIdentifier, value)
+            serviceId, characteristicId, value)
     };
 
 } // namespace prefab

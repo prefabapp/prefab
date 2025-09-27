@@ -45,12 +45,14 @@ int main() {
         
         // Test UpdateAccessoryInput
         prefab::UpdateAccessoryInput update;
-        update.characteristicUniqueIdentifier = "test-uuid";
+        update.serviceId = "test-service-uuid";
+        update.characteristicId = "test-characteristic-uuid";
         update.value = "50";
         
         nlohmann::json j4 = update;
         auto update2 = j4.get<prefab::UpdateAccessoryInput>();
-        assert(update.characteristicUniqueIdentifier == update2.characteristicUniqueIdentifier);
+        assert(update.serviceId == update2.serviceId);
+        assert(update.characteristicId == update2.characteristicId);
         assert(update.value == update2.value);
         std::cout << "✓ UpdateAccessoryInput serialization test passed" << std::endl;
         
