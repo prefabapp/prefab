@@ -9,6 +9,71 @@ import Foundation
 import OSLog
 import Hummingbird
 
+// BonjourAdvertiser: manage NetService creation, TXT record, publish, retries on name conflict.
+final class BonjourAdvertiser: NSObject, NetServiceDelegate {
+	private var service: NetService?
+	private let baseName: String
+	private let serviceType: String
+	private let port: Int32
+	private let txtData: [String: String]
+	private var attempt = 0
+
+	init(name: String, type: String, port: Int32, txt: [String:String]) {
+		self.baseName = name
+		self.serviceType = type
+		self.port = port
+		self.txtData = txt
+		super.init()
+		createService(name: name)
+	}
+	
+	private func createService(name: String) {
+		let cleanType = serviceType.trimmingCharacters(in: .whitespacesAndNewlines)
+		let svc = NetService(domain: "", type: cleanType, name: name, port: port)
+		// Don't set peer-to-peer for initial testing
+		// svc.includesPeerToPeer = true
+		let txtDict = txtData.reduce(into: [String: Data]()) { $0[$1.key] = $1.value.data(using: .utf8) }
+		svc.setTXTRecord(NetService.data(fromTXTRecord: txtDict))
+		svc.delegate = self
+		self.service = svc
+	}
+
+	func publish() {
+		let cleanType = serviceType.trimmingCharacters(in: .whitespacesAndNewlines)
+		print("🔎 Publishing Bonjour service: \(service?.name ?? "unknown") type: \(cleanType) port: \(service?.port ?? 0)")
+		service?.publish()
+	}
+
+	func stop() {
+		service?.stop()
+		service = nil
+	}
+
+	// Optional: accept connections if using NetService sockets; here we only advertise HTTP on port.
+	func netServiceDidPublish(_ sender: NetService) {
+		let cleanType = sender.type.trimmingCharacters(in: .whitespacesAndNewlines)
+		let cleanDomain = sender.domain.trimmingCharacters(in: .whitespacesAndNewlines)
+		print("✅ Bonjour published: \(cleanType) \(sender.name).\(cleanDomain)")
+	}
+	func netService(_ sender: NetService, didNotPublish errorDict: [String : NSNumber]) {
+		if let errorCode = errorDict["NSNetServicesErrorCode"]?.intValue {
+			switch errorCode {
+			case -72003: // kDNSServiceErr_NameConflict
+				attempt += 1
+				let newName = attempt == 1 ? "\(baseName) (2)" : "\(baseName) (\(attempt + 1))"
+				print("⚠️  Name conflict, retrying as '\(newName)'")
+				createService(name: newName)
+				publish()
+				return
+			default:
+				print("❌ Bonjour error: \(errorDict)")
+			}
+		} else {
+			print("❌ Bonjour error: \(errorDict)")
+		}
+	}
+}
+
 struct HomeKitAuthLogger: HBMiddleware {
     func apply(to request: HBRequest, next: HBResponder) -> EventLoopFuture<HBResponse> {
         let homebase = HomeBase()
@@ -25,11 +90,12 @@ struct HomeKitAuthLogger: HBMiddleware {
 
 class Server  {
     var homeBase: HomeBase
-    private var netService: NetService?
+    private var bonjourAdvertiser: BonjourAdvertiser?
     
     init() {
-        homeBase = HomeBase()
-        let serverThread = Thread.init(target: self, selector: #selector(startServer), object: HomeBase())
+        self.homeBase = HomeBase.shared
+        // Start server and mDNS on a background thread with a run loop
+        let serverThread = Thread(target: self, selector: #selector(startServer), object: nil)
         serverThread.start()
     }
     
@@ -38,30 +104,21 @@ class Server  {
     }
     
     private func startAdvertising() {
-        // Create and configure the NetService for mDNS advertising
-        let txtData: [String: Data] = [
-            "server": "prefab".data(using: .utf8)!,
-            "version": "1.0".data(using: .utf8)!,
-            "api": "homekit".data(using: .utf8)!
+        // Create and configure the BonjourAdvertiser for mDNS advertising
+        let txtData: [String: String] = [
+            "server": "prefab",
+            "version": "1.0",
+            "api": "homekit"
         ]
         
-        netService = NetService(domain: "", type: "_http._tcp.", name: "Prefab HomeKit Bridge", port: 8080)
-        let txtRecord = NetService.data(fromTXTRecord: txtData)
-        netService?.setTXTRecord(txtRecord)
-        
-        guard let service = netService else {
-            Logger().error("Failed to create NetService")
-            return
-        }
-        
-        // Start advertising
-        service.publish()
+        bonjourAdvertiser = BonjourAdvertiser(name: "Prefab HomeKit Bridge", type: "_prefab._tcp.", port: 8080, txt: txtData)
+        bonjourAdvertiser?.publish()
         Logger().info("Started mDNS advertising for Prefab HomeKit Server on port 8080")
     }
     
     private func stopAdvertising() {
-        netService?.stop()
-        netService = nil
+        bonjourAdvertiser?.stop()
+        bonjourAdvertiser = nil
         Logger().info("Stopped mDNS advertising")
     }
     
@@ -76,7 +133,7 @@ class Server  {
     }
     
     @objc
-    func startServer(homeStore: HomeBase) {
+    func startServer() {
         Task{
             let app = HBApplication(configuration: .init(address: .hostname("0.0.0.0", port: 8080)))
             app.logger.logLevel = .debug
@@ -96,6 +153,8 @@ class Server  {
             startAdvertising()
             
             try app.start()
+            RunLoop.current.add(Port(), forMode: .default)
+            while true { RunLoop.current.run(mode: .default, before: Date.distantFuture) }
             await app.asyncWait()
         }
     }

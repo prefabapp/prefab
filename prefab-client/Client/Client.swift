@@ -32,7 +32,17 @@ class ServiceDiscoveryDelegate: NSObject, NetServiceBrowserDelegate, NetServiceD
             self.discoveryCompletionHandler = { result in
                 continuation.resume(with: result)
             }
-            serviceBrowser.searchForServices(ofType: "_http._tcp.", inDomain: "")
+            serviceBrowser.searchForServices(ofType: "_http._tcp.", inDomain: "local.")
+            
+            // Pump the run loop so NetServiceBrowser can deliver callbacks in this async context
+            DispatchQueue.global().async {
+                let end = Date().addingTimeInterval(5.0)
+                let runLoop = RunLoop.current
+                runLoop.add(Port(), forMode: .default)
+                while Date() < end && self.discoveryCompletionHandler != nil {
+                    runLoop.run(mode: .default, before: Date().addingTimeInterval(0.1))
+                }
+            }
             
             // Set a timeout to prevent hanging indefinitely
             DispatchQueue.global().asyncAfter(deadline: .now() + 5.0) {
@@ -70,7 +80,8 @@ class ServiceDiscoveryDelegate: NSObject, NetServiceBrowserDelegate, NetServiceD
         serviceBrowser.stop()
         
         if let hostName = sender.hostName {
-            discoveryCompletionHandler?(.success(Client.initShared(host: hostName, port: String(sender.port), scheme: "http")))
+            let cleanHost = hostName.hasSuffix(".") ? String(hostName.dropLast()) : hostName
+            discoveryCompletionHandler?(.success(Client.initShared(host: cleanHost, port: String(sender.port), scheme: "http")))
         } else {
             discoveryCompletionHandler?(.failure(.invalidServiceData))
         }

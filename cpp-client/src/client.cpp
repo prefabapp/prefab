@@ -3,8 +3,12 @@
 #include <sstream>
 #include <iostream>
 #include <nlohmann/json.hpp>
+// threading/sync for non-blocking Avahi discovery
+#include <thread>
+#include <mutex>
+#include <condition_variable>
+#include <chrono>
 
-#ifdef HAVE_AVAHI
 #include <avahi-client/client.h>
 #include <avahi-client/lookup.h>
 #include <avahi-common/simple-watch.h>
@@ -12,11 +16,6 @@
 #include <avahi-common/error.h>
 #include <arpa/inet.h>
 #include <netdb.h>
-#elif defined(__APPLE__)
-#include <dns_sd.h>
-#include <arpa/inet.h>
-#include <netdb.h>
-#endif
 
 using json = nlohmann::json;
 
@@ -52,7 +51,9 @@ namespace prefab {
             throw PrefabException("Failed to initialize CURL");
         }
 
-        std::string url = getBaseUrl() + path;
+    std::string url = getBaseUrl() + path;
+    // Log the outgoing request for diagnostics
+    
         
         curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
@@ -86,7 +87,12 @@ namespace prefab {
         }
 
         if (httpCode >= 400) {
+            // Log a short snippet of the response to help debugging
+            std::string resp_snip = response.size() > 200 ? response.substr(0, 200) + "..." : response;
+            
             throw PrefabException("HTTP error: " + response, (int)httpCode);
+        } else {
+            
         }
 
         return response;
@@ -153,7 +159,7 @@ namespace prefab {
     }
 
     std::vector<Room> PrefabClient::getRooms(const std::string& homeName) {
-        std::string path = "/homes/" + urlEncode(homeName) + "/rooms";
+        std::string path = "/rooms/" + urlEncode(homeName);
         std::string response = makeHttpRequest("GET", path);
         
         try {
@@ -165,7 +171,7 @@ namespace prefab {
     }
 
     Room PrefabClient::getRoom(const std::string& homeName, const std::string& roomName) {
-        std::string path = "/homes/" + urlEncode(homeName) + "/rooms/" + urlEncode(roomName);
+        std::string path = "/rooms/" + urlEncode(homeName) + "/" + urlEncode(roomName);
         std::string response = makeHttpRequest("GET", path);
         
         try {
@@ -177,7 +183,15 @@ namespace prefab {
     }
 
     std::vector<Accessory> PrefabClient::getAccessories(const std::string& homeName, const std::string& roomName) {
-        std::string path = "/homes/" + urlEncode(homeName) + "/rooms/" + urlEncode(roomName) + "/accessories";
+        std::string path = "/accessories/" + urlEncode(homeName) + "/" + urlEncode(roomName);
+        // Diagnostic log: show constructed path and source parameters so we can detect empty room names
+        try {
+            std::cerr << "PrefabClient: getAccessories called home=\"" << homeName
+                      << "\" room=\"" << roomName << "\" path=\"" << path << "\"" << std::endl;
+        } catch (...) {
+            // best-effort logging
+        }
+    
         std::string response = makeHttpRequest("GET", path);
         
         try {
@@ -189,7 +203,14 @@ namespace prefab {
     }
 
     Accessory PrefabClient::getAccessory(const std::string& homeName, const std::string& roomName, const std::string& accessoryName) {
-        std::string path = "/homes/" + urlEncode(homeName) + "/rooms/" + urlEncode(roomName) + "/accessories/" + urlEncode(accessoryName);
+        std::string path = "/accessories/" + urlEncode(homeName) + "/" + urlEncode(roomName) + "/" + urlEncode(accessoryName);
+        // Diagnostic log: show constructed path and parameters so callers can see when roomName is empty
+        try {
+            std::cerr << "PrefabClient: getAccessory called home=\"" << homeName
+                      << "\" room=\"" << roomName << "\" accessory=\"" << accessoryName
+                      << "\" path=\"" << path << "\"" << std::endl;
+        } catch (...) {}
+
         std::string response = makeHttpRequest("GET", path);
         
         try {
@@ -204,7 +225,13 @@ namespace prefab {
                                             const std::string& roomName,
                                             const std::string& accessoryName,
                                             const UpdateAccessoryInput& update) {
-        std::string path = "/homes/" + urlEncode(homeName) + "/rooms/" + urlEncode(roomName) + "/accessories/" + urlEncode(accessoryName);
+        std::string path = "/accessories/" + urlEncode(homeName) + "/" + urlEncode(roomName) + "/" + urlEncode(accessoryName);
+        // Diagnostic log: update path and params
+        try {
+            std::cerr << "PrefabClient: updateAccessory called home=\"" << homeName
+                      << "\" room=\"" << roomName << "\" accessory=\"" << accessoryName
+                      << "\" path=\"" << path << "\"" << std::endl;
+        } catch (...) {}
         
         try {
             json j = update;
@@ -251,12 +278,13 @@ namespace prefab {
         return updateAccessory(homeName, roomName, accessoryName, update);
     }
 
-#ifdef HAVE_AVAHI
-    // Avahi discovery implementation for Linux
+    // Avahi discovery implementation (always compiled)
     struct AvahiDiscoveryData {
         ServiceDiscoveryCallback callback;
         bool foundService;
         AvahiSimplePoll* simple_poll;
+        std::mutex mutex;
+        std::condition_variable cv;
     };
 
     static void resolve_callback(
@@ -285,8 +313,11 @@ namespace prefab {
                 avahi_address_snprint(addr_str, sizeof(addr_str), address);
                 
                 data->callback(std::string(addr_str), port);
-                data->foundService = true;
-                
+                {
+                    std::lock_guard<std::mutex> lk(data->mutex);
+                    data->foundService = true;
+                }
+                data->cv.notify_one();
                 // Stop polling after first service found
                 avahi_simple_poll_quit(data->simple_poll);
                 break;
@@ -332,8 +363,14 @@ namespace prefab {
     }
 
     static void client_callback([[maybe_unused]] AvahiClient *c, AvahiClientState state, void *userdata) {
+        AvahiDiscoveryData* data = static_cast<AvahiDiscoveryData*>(userdata);
+        if (!data) return;
         if (state == AVAHI_CLIENT_FAILURE) {
-            AvahiDiscoveryData* data = static_cast<AvahiDiscoveryData*>(userdata);
+            {
+                std::lock_guard<std::mutex> lk(data->mutex);
+                data->foundService = false;
+            }
+            data->cv.notify_one();
             avahi_simple_poll_quit(data->simple_poll);
         }
     }
@@ -342,14 +379,8 @@ namespace prefab {
         AvahiSimplePoll *simple_poll = avahi_simple_poll_new();
         if (!simple_poll) return false;
         
-        AvahiClient *client = avahi_client_new(avahi_simple_poll_get(simple_poll), 
-                                             static_cast<AvahiClientFlags>(0), 
-                                             client_callback, nullptr, nullptr);
-        if (!client) {
-            avahi_simple_poll_free(simple_poll);
-            return false;
-        }
-        
+        // Prepare discovery data BEFORE creating the Avahi client so the client callback
+        // can safely access the userdata pointer.
         AvahiDiscoveryData data;
         data.foundService = false;
         data.simple_poll = simple_poll;
@@ -358,47 +389,73 @@ namespace prefab {
             this->discoveredBaseUrl_ = url;
         };
         
-        AvahiServiceBrowser *sb = avahi_service_browser_new(client, AVAHI_IF_UNSPEC, AVAHI_PROTO_UNSPEC, 
-                                                          "_prefab._tcp", nullptr, 
-                                                          static_cast<AvahiLookupFlags>(0), 
-                                                          browse_callback, &data);
-        if (!sb) {
-            avahi_client_free(client);
-            avahi_simple_poll_free(simple_poll);
-            return false;
-        }
-        
-        // Run for a limited time
-        [[maybe_unused]] struct timeval timeout = {5, 0}; // 5 seconds
-        [[maybe_unused]] int result = avahi_simple_poll_loop(simple_poll);
-        
-        avahi_service_browser_free(sb);
-        avahi_client_free(client);
-        avahi_simple_poll_free(simple_poll);
-        
-        return data.foundService;
-    }
-
-    bool PrefabClient::discoverServices(ServiceDiscoveryCallback callback, [[maybe_unused]] int timeoutMs) {
-        AvahiSimplePoll *simple_poll = avahi_simple_poll_new();
-        if (!simple_poll) return false;
-        
-        AvahiClient *client = avahi_client_new(avahi_simple_poll_get(simple_poll), 
-                                             static_cast<AvahiClientFlags>(0), 
-                                             client_callback, nullptr, nullptr);
+        int error = 0;
+        AvahiClient *client = avahi_client_new(avahi_simple_poll_get(simple_poll),
+                                               static_cast<AvahiClientFlags>(0),
+                                               client_callback,
+                                               &data,
+                                               &error);
         if (!client) {
             avahi_simple_poll_free(simple_poll);
             return false;
         }
+        
+         AvahiServiceBrowser *sb = avahi_service_browser_new(client, AVAHI_IF_UNSPEC, AVAHI_PROTO_UNSPEC, 
+                                                           "_prefab._tcp", nullptr, 
+                                                           static_cast<AvahiLookupFlags>(0), 
+                                                           browse_callback, &data);
+         if (!sb) {
+             avahi_client_free(client);
+             avahi_simple_poll_free(simple_poll);
+             return false;
+         }
+         
+         // Run the Avahi poll loop on a background thread and wait for a discovery
+         // event or timeout so this function returns instead of blocking forever.
+         std::thread poller([simple_poll]() {
+             avahi_simple_poll_loop(simple_poll);
+         });
+         
+         // Wait up to 5 seconds for discovery
+         {
+             std::unique_lock<std::mutex> lk(data.mutex);
+             data.cv.wait_for(lk, std::chrono::seconds(5), [&data]() { return data.foundService; });
+         }
+         
+         // Ensure the poll loop stops (resolve_callback may have already called quit)
+         avahi_simple_poll_quit(simple_poll);
+         if (poller.joinable()) poller.join();
+         
+         avahi_service_browser_free(sb);
+         avahi_client_free(client);
+         avahi_simple_poll_free(simple_poll);
+         
+         return data.foundService;
+     }
+
+     bool PrefabClient::discoverServices(ServiceDiscoveryCallback callback, [[maybe_unused]] int timeoutMs) {
+        AvahiSimplePoll *simple_poll = avahi_simple_poll_new();
+        if (!simple_poll) return false;
         
         AvahiDiscoveryData data;
         data.foundService = false;
         data.simple_poll = simple_poll;
         data.callback = callback;
         
-        AvahiServiceBrowser *sb = avahi_service_browser_new(client, AVAHI_IF_UNSPEC, AVAHI_PROTO_UNSPEC, 
-                                                          "_prefab._tcp", nullptr, 
-                                                          static_cast<AvahiLookupFlags>(0), 
+        int error = 0;
+        AvahiClient *client = avahi_client_new(avahi_simple_poll_get(simple_poll),
+                                               static_cast<AvahiClientFlags>(0),
+                                               client_callback,
+                                               &data,
+                                               &error);
+        if (!client) {
+            avahi_simple_poll_free(simple_poll);
+            return false;
+        }
+        
+        AvahiServiceBrowser *sb = avahi_service_browser_new(client, AVAHI_IF_UNSPEC, AVAHI_PROTO_UNSPEC,
+                                                          "_prefab._tcp", nullptr,
+                                                          static_cast<AvahiLookupFlags>(0),
                                                           browse_callback, &data);
         if (!sb) {
             avahi_client_free(client);
@@ -406,70 +463,25 @@ namespace prefab {
             return false;
         }
         
-        // Simple timeout handling - in production you'd want better timeout control
-        avahi_simple_poll_loop(simple_poll);
+        // Run poll loop on a background thread and wait for discovery or timeout
+        std::thread poller([simple_poll]() {
+            avahi_simple_poll_loop(simple_poll);
+        });
+        
+        int waitMs = (timeoutMs > 0) ? timeoutMs : 5000;
+        {
+            std::unique_lock<std::mutex> lk(data.mutex);
+            data.cv.wait_for(lk, std::chrono::milliseconds(waitMs), [&data]() { return data.foundService; });
+        }
+        
+        avahi_simple_poll_quit(simple_poll);
+        if (poller.joinable()) poller.join();
         
         avahi_service_browser_free(sb);
         avahi_client_free(client);
         avahi_simple_poll_free(simple_poll);
         
         return data.foundService;
-    }
-
-#elif defined(__APPLE__)
-    // Apple Bonjour implementation
-    bool PrefabClient::discoverService() {
-        // DNS-SD implementation for macOS would go here
-        return false;
-    }
-
-    bool PrefabClient::discoverServices(ServiceDiscoveryCallback callback, int timeoutMs) {
-        // DNS-SD implementation for macOS would go here
-        return false;
-    }
-
-#else
-    // Fallback implementation for other systems
-    bool PrefabClient::discoverService() {
-        // Try some common addresses manually
-        std::vector<std::string> commonHosts = {
-            "localhost", "127.0.0.1",
-            "192.168.1.100", "192.168.1.101", "192.168.1.102",
-            "192.168.0.100", "192.168.0.101", "192.168.0.102"
-        };
-        
-        for (const auto& host : commonHosts) {
-            std::string testUrl = "http://" + host + ":8080";
-            PrefabClient testClient(ClientConfig(testUrl));
-            if (testClient.testConnection()) {
-                discoveredBaseUrl_ = testUrl;
-                return true;
-            }
-        }
-        
-        return false;
-    }
-
-    bool PrefabClient::discoverServices(ServiceDiscoveryCallback callback, int timeoutMs) {
-        // Try some common addresses manually
-        std::vector<std::string> commonHosts = {
-            "localhost", "127.0.0.1",
-            "192.168.1.100", "192.168.1.101", "192.168.1.102",
-            "192.168.0.100", "192.168.0.101", "192.168.0.102"
-        };
-        
-        for (const auto& host : commonHosts) {
-            std::string testUrl = "http://" + host + ":8080";
-            PrefabClient testClient(ClientConfig(testUrl));
-            if (testClient.testConnection()) {
-                callback(host, 8080);
-                setBaseUrl(testUrl);
-                return true;
-            }
-        }
-        
-        return false;
-    }
-#endif
+     }
 
 } // namespace prefab

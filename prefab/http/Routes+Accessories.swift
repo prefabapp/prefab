@@ -71,53 +71,98 @@ extension Server {
     }
     
     func updateAccessory(_ request: HBRequest) throws -> String {
-        var updateAccessoryInput: UpdateAccessoryInput
-        do {
-            updateAccessoryInput = try JSONDecoder().decode(UpdateAccessoryInput.self, from: request.body.buffer!)
-        } catch {
-            throw HBHTTPError(
-                .badRequest,
-                message: "Invalid update object."
-            )
+        let logger = Logger(subsystem: "app.prefab", category: "updateAccessory")
+        logger.debug("updateAccessory called")
+
+        // Ensure request body exists to avoid force-unwrapping crashes
+        guard let bodyBuffer = request.body.buffer else {
+            logger.error("Request body is missing.")
+            throw HBHTTPError(.badRequest, message: "Missing request body.")
         }
-        
+
+        // Decode input
+        let updateAccessoryInput: UpdateAccessoryInput
+        do {
+            updateAccessoryInput = try JSONDecoder().decode(UpdateAccessoryInput.self, from: bodyBuffer)
+            logger.debug("Decoded UpdateAccessoryInput: serviceId=\(updateAccessoryInput.serviceId, privacy: .public), characteristicId=\(updateAccessoryInput.characteristicId, privacy: .public), value=\(updateAccessoryInput.value, privacy: .public)")
+        } catch {
+            logger.error("Failed to decode UpdateAccessoryInput: \(error.localizedDescription, privacy: .public)")
+            throw HBHTTPError(.badRequest, message: "Invalid update object.")
+        }
+
+        // Extract params
         let homeName = try getRequiredParam(param: "home", request: request)
         let roomName = try getRequiredParam(param: "room", request: request)
         let accessoryName = try getRequiredParam(param: "accessory", request: request)
-        
-        let home = homeBase.homes.first(where: {$0.name == homeName.removingPercentEncoding})
-        if (home == nil) {
+        logger.debug("Params home=\(homeName, privacy: .public), room=\(roomName, privacy: .public), accessory=\(accessoryName, privacy: .public)")
+
+        // Locate Home
+        let home = homeBase.homes.first(where: { $0.name == homeName.removingPercentEncoding })
+        guard let home else {
+            logger.error("Home not found: \(homeName, privacy: .public)")
             throw HBHTTPError(.notFound)
         }
-        let room = home?.rooms.first(where: {$0.name == roomName.removingPercentEncoding})
-        if (room == nil) {
+        logger.debug("Found home: \(home.name, privacy: .public)")
+
+        // Locate Room
+        let room = home.rooms.first(where: { $0.name == roomName.removingPercentEncoding })
+        guard let room else {
+            logger.error("Room not found: \(roomName, privacy: .public)")
             throw HBHTTPError(.notFound)
         }
-        let hkAccessory = room?.accessories.first(where: { (hmAccessory: HMAccessory) -> Bool in hmAccessory.name == accessoryName.removingPercentEncoding})
-        if (hkAccessory == nil) {
+        logger.debug("Found room: \(room.name, privacy: .public)")
+
+        // Locate Accessory
+        let hkAccessory = room.accessories.first(where: { $0.name == accessoryName.removingPercentEncoding })
+        guard let hkAccessory else {
+            logger.error("Accessory not found: \(accessoryName, privacy: .public)")
             throw HBHTTPError(.notFound)
+        }
+        logger.debug("Found accessory: \(hkAccessory.name, privacy: .public) reachable=\(hkAccessory.isReachable, privacy: .public)")
+
+        // Locate Service
+        let hkService = hkAccessory.services.first(where: { $0.uniqueIdentifier.uuidString == updateAccessoryInput.serviceId })
+        guard let hkService else {
+            logger.error("Service not found: \(updateAccessoryInput.serviceId, privacy: .public)")
+            throw HBHTTPError(.notFound)
+        }
+        logger.debug("Found service: \(hkService.name, privacy: .public) type=\(hkService.serviceType, privacy: .public)")
+
+        // Locate Characteristic
+        let hkChar = hkService.characteristics.first(where: { $0.uniqueIdentifier.uuidString == updateAccessoryInput.characteristicId })
+        guard let hkChar else {
+            logger.error("Characteristic not found: \(updateAccessoryInput.characteristicId, privacy: .public)")
+            throw HBHTTPError(.notFound)
+        }
+        logger.debug("Found characteristic: \(hkChar.localizedDescription, privacy: .public) type=\(hkChar.characteristicType, privacy: .public) format=\(hkChar.metadata?.format ?? "nil", privacy: .public) properties=\(hkChar.properties.joined(separator: ","), privacy: .public)")
+
+        // Prepare value for write
+        let valueToWrite: Any
+        do {
+            valueToWrite = try GetValue(value: updateAccessoryInput.value, format: hkChar.metadata?.format ?? "")
+            logger.debug("Prepared value to write: \(String(describing: valueToWrite), privacy: .public)")
+        } catch {
+            logger.error("Failed to convert value '\(updateAccessoryInput.value, privacy: .public)' with format '\(hkChar.metadata?.format ?? "nil", privacy: .public)': \(error.localizedDescription, privacy: .public)")
+            throw error
         }
 
-        let hkService = hkAccessory?.services.first(where: { (hmService: HMService) -> Bool in hmService.uniqueIdentifier.uuidString == updateAccessoryInput.serviceId})
-        if (hkAccessory == nil) {
-            Logger().debug("Service not found \(updateAccessoryInput.serviceId)")
-            throw HBHTTPError(.notFound)
-        }
-        
-        let hkChar = hkService?.characteristics.first(where: { (hmChar: HMCharacteristic) -> Bool in hmChar.uniqueIdentifier.uuidString == updateAccessoryInput.characteristicId})
-        if (hkAccessory == nil) {
-            Logger().debug("Characteristic not found \(updateAccessoryInput.characteristicId)")
-            throw HBHTTPError(.notFound)
-        }
-        
+        logger.debug("Attempting write to characteristic \(hkChar.uniqueIdentifier.uuidString, privacy: .public)")
 
-        Logger().debug("Writing \(updateAccessoryInput.value) to \(hkChar)")
-        
         let group = DispatchGroup()
         group.enter()
-        hkChar?.writeValue(try GetValue(value: updateAccessoryInput.value, format: hkChar?.metadata?.format ?? ""), completionHandler: { (error: Error?) -> Void in defer {group.leave()}; Logger().error("\(String(describing: error))") })
-        group.wait()
+        hkChar.writeValue(valueToWrite) { error in
+            if let error {
+                logger.error("writeValue completion with error: \(error.localizedDescription, privacy: .public)")
+            } else {
+                logger.debug("writeValue completed successfully.")
+            }
+            group.leave()
+        }
 
-        return "" //json!
+        group.wait()
+        logger.debug("writeValue wait completed.")
+
+        return ""
     }
 }
+
