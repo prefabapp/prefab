@@ -197,6 +197,65 @@ namespace prefab {
                                              const std::string& accessoryName,
                                              const std::string& characteristicType,
                                              const std::string& value);
+
+        // Scene API methods
+
+        /**
+         * @brief Get all scenes in a home
+         * 
+         * @param homeName Name of the home
+         * @return std::vector<HomeKitScene> List of scenes
+         */
+        std::vector<HomeKitScene> getScenes(const std::string& homeName);
+
+        /**
+         * @brief Get detailed scene info
+         * 
+         * @param homeName Name of the home
+         * @param sceneId UUID of the scene
+         * @return SceneDetail Detailed scene information including actions
+         */
+        SceneDetail getScene(const std::string& homeName, const std::string& sceneId);
+
+        /**
+         * @brief Execute a scene
+         * 
+         * @param homeName Name of the home
+         * @param sceneId UUID of the scene
+         * @return std::string Response from the server
+         */
+        std::string executeScene(const std::string& homeName, const std::string& sceneId);
+
+        // Accessory Group API methods
+
+        /**
+         * @brief Get all accessory groups in a home
+         * 
+         * @param homeName Name of the home
+         * @return std::vector<AccessoryGroup> List of groups
+         */
+        std::vector<AccessoryGroup> getGroups(const std::string& homeName);
+
+        /**
+         * @brief Get detailed group info
+         * 
+         * @param homeName Name of the home
+         * @param groupId UUID of the group
+         * @return AccessoryGroupDetail Detailed group information including services
+         */
+        AccessoryGroupDetail getGroup(const std::string& homeName, const std::string& groupId);
+
+        /**
+         * @brief Update all accessories in a group
+         * 
+         * @param homeName Name of the home
+         * @param groupId UUID of the group
+         * @param update Update information containing characteristic type and value
+         * @return std::string Response from the server
+         */
+        std::string updateGroup(const std::string& homeName,
+                               const std::string& groupId,
+                               const UpdateGroupInput& update);
     };
 
 } // namespace prefab

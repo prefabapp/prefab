@@ -487,4 +487,79 @@ namespace prefab {
         return data.foundService;
      }
 
+    // ========================================================================
+    // Scene API methods
+    // ========================================================================
+
+    std::vector<HomeKitScene> PrefabClient::getScenes(const std::string& homeName) {
+        std::string path = "/scenes/" + urlEncode(homeName);
+        std::string response = makeHttpRequest("GET", path);
+        
+        try {
+            json j = json::parse(response);
+            return j.get<std::vector<HomeKitScene>>();
+        } catch (const json::exception& e) {
+            throw PrefabException("Failed to parse scenes response: " + std::string(e.what()));
+        }
+    }
+
+    SceneDetail PrefabClient::getScene(const std::string& homeName, const std::string& sceneId) {
+        std::string path = "/scenes/" + urlEncode(homeName) + "/" + urlEncode(sceneId);
+        std::string response = makeHttpRequest("GET", path);
+        
+        try {
+            json j = json::parse(response);
+            return j.get<SceneDetail>();
+        } catch (const json::exception& e) {
+            throw PrefabException("Failed to parse scene response: " + std::string(e.what()));
+        }
+    }
+
+    std::string PrefabClient::executeScene(const std::string& homeName, const std::string& sceneId) {
+        std::string path = "/scenes/" + urlEncode(homeName) + "/" + urlEncode(sceneId) + "/execute";
+        return makeHttpRequest("POST", path);
+    }
+
+    // ========================================================================
+    // Accessory Group API methods
+    // ========================================================================
+
+    std::vector<AccessoryGroup> PrefabClient::getGroups(const std::string& homeName) {
+        std::string path = "/groups/" + urlEncode(homeName);
+        std::string response = makeHttpRequest("GET", path);
+        
+        try {
+            json j = json::parse(response);
+            return j.get<std::vector<AccessoryGroup>>();
+        } catch (const json::exception& e) {
+            throw PrefabException("Failed to parse groups response: " + std::string(e.what()));
+        }
+    }
+
+    AccessoryGroupDetail PrefabClient::getGroup(const std::string& homeName, const std::string& groupId) {
+        std::string path = "/groups/" + urlEncode(homeName) + "/" + urlEncode(groupId);
+        std::string response = makeHttpRequest("GET", path);
+        
+        try {
+            json j = json::parse(response);
+            return j.get<AccessoryGroupDetail>();
+        } catch (const json::exception& e) {
+            throw PrefabException("Failed to parse group response: " + std::string(e.what()));
+        }
+    }
+
+    std::string PrefabClient::updateGroup(const std::string& homeName,
+                                         const std::string& groupId,
+                                         const UpdateGroupInput& update) {
+        std::string path = "/groups/" + urlEncode(homeName) + "/" + urlEncode(groupId);
+        
+        try {
+            json j = update;
+            std::string body = j.dump();
+            return makeHttpRequest("PUT", path, body);
+        } catch (const json::exception& e) {
+            throw PrefabException("Failed to serialize group update request: " + std::string(e.what()));
+        }
+    }
+
 } // namespace prefab

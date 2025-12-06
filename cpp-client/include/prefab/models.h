@@ -221,4 +221,100 @@ namespace prefab {
             serviceId, characteristicId, value)
     };
 
+    // ========================================================================
+    // Scenes
+    // ========================================================================
+
+    /**
+     * @brief Basic scene info (list view)
+     */
+    struct HomeKitScene {
+        std::string home;
+        std::string uniqueIdentifier;
+        std::string name;
+        bool isBuiltIn = false;
+
+        NLOHMANN_DEFINE_TYPE_INTRUSIVE(HomeKitScene, home, uniqueIdentifier, name, isBuiltIn)
+    };
+
+    /**
+     * @brief Action within a scene
+     */
+    struct SceneAction {
+        std::string accessoryName;
+        std::string serviceName;
+        std::string characteristicType;
+        std::string targetValue;
+
+        NLOHMANN_DEFINE_TYPE_INTRUSIVE(SceneAction, 
+            accessoryName, serviceName, characteristicType, targetValue)
+    };
+
+    /**
+     * @brief Detailed scene info including actions
+     */
+    struct SceneDetail {
+        std::string home;
+        std::string uniqueIdentifier;
+        std::string name;
+        bool isBuiltIn = false;
+        std::vector<SceneAction> actions;
+
+        NLOHMANN_DEFINE_TYPE_INTRUSIVE(SceneDetail, 
+            home, uniqueIdentifier, name, isBuiltIn, actions)
+    };
+
+    // ========================================================================
+    // Accessory Groups
+    // ========================================================================
+
+    /**
+     * @brief Service within a group
+     */
+    struct GroupService {
+        std::string accessoryName;
+        std::string serviceName;
+        std::string serviceType;
+        std::string uniqueIdentifier;
+
+        NLOHMANN_DEFINE_TYPE_INTRUSIVE(GroupService, 
+            accessoryName, serviceName, serviceType, uniqueIdentifier)
+    };
+
+    /**
+     * @brief Basic group info (list view)
+     */
+    struct AccessoryGroup {
+        std::string home;
+        std::string uniqueIdentifier;
+        std::string name;
+        int serviceCount = 0;
+
+        NLOHMANN_DEFINE_TYPE_INTRUSIVE(AccessoryGroup, 
+            home, uniqueIdentifier, name, serviceCount)
+    };
+
+    /**
+     * @brief Detailed group info including services
+     */
+    struct AccessoryGroupDetail {
+        std::string home;
+        std::string uniqueIdentifier;
+        std::string name;
+        std::vector<GroupService> services;
+
+        NLOHMANN_DEFINE_TYPE_INTRUSIVE(AccessoryGroupDetail, 
+            home, uniqueIdentifier, name, services)
+    };
+
+    /**
+     * @brief Input for updating group characteristics
+     */
+    struct UpdateGroupInput {
+        std::string characteristicType;
+        std::string value;
+
+        NLOHMANN_DEFINE_TYPE_INTRUSIVE(UpdateGroupInput, characteristicType, value)
+    };
+
 } // namespace prefab

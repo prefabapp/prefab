@@ -149,6 +149,14 @@ class Server  {
             app.router.get("accessories/:home/:room/:accessory", use: self.getAccessory)
             app.router.put("accessories/:home/:room/:accessory", use: self.updateAccessory)
             
+            app.router.get("scenes/:home", use: self.getScenes)
+            app.router.get("scenes/:home/:scene", use: self.getScene)
+            app.router.post("scenes/:home/:scene/execute", use: self.executeScene)
+            
+            app.router.get("groups/:home", use: self.getGroups)
+            app.router.get("groups/:home/:group", use: self.getGroup)
+            app.router.put("groups/:home/:group", use: self.updateGroup)
+            
             // Start mDNS advertising
             startAdvertising()
             
