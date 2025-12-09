@@ -23,7 +23,9 @@ extension Server {
             throw HBHTTPError(.notFound)
         }
         
-        let accessories = room?.accessories.map{ (hmAccessory: HMAccessory) -> Accessory in Accessory(home: home!.name, room: room!.name, name: hmAccessory.name)}
+        let accessories = room?.accessories.map{ (hmAccessory: HMAccessory) -> Accessory in 
+            Accessory(home: home!.name, room: room!.name, name: hmAccessory.name, category: hmAccessory.category.localizedDescription)
+        }
         let jsonEncoder = JSONEncoder()
         let jsonData = try jsonEncoder.encode(accessories)
         let json = String(data: jsonData, encoding: String.Encoding.utf8)

@@ -254,12 +254,14 @@ namespace prefab {
             throw PrefabException("Accessory has no services");
         }
         
-        // Find the characteristic with the matching type and get both service and characteristic IDs
+        // Find the characteristic with the matching type (UUID or typeName) and get both service and characteristic IDs
         std::string serviceId;
         std::string characteristicId;
         for (const auto& service : accessory.services.value()) {
             for (const auto& characteristic : service.characteristics) {
-                if (characteristic.type == characteristicType) {
+                // Match by UUID (type field) or by typeName
+                if (characteristic.type == characteristicType || 
+                    characteristic.typeName == characteristicType) {
                     serviceId = service.uniqueIdentifier;
                     characteristicId = characteristic.uniqueIdentifier;
                     break;
