@@ -1,0 +1,32 @@
+# Build directories
+build/
+*build*/
+
+# CMake generated files
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+*.cmake
+
+# Compiled libraries
+*.a
+*.so
+*.dylib
+
+# Executables
+simple_client
+discovery_example
+accessory_control
+test_models
+
+# IDE files
+.vscode/
+.clangd/
+compile_commands.json
+
+# macOS
+.DS_Store
+
+# Debug files
+*.dSYM/

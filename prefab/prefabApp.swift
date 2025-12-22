@@ -10,11 +10,9 @@ import SwiftUI
 
 @main
 struct prefabApp: App {
+    private let server = Server()
     @State var displayInstall: Bool = false
     
-    init() {
-        let _ = Server()
-    }
     var body: some Scene {
         WindowGroup {
             ContentView(homebase: HomeBase.shared)

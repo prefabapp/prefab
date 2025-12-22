@@ -15,6 +15,8 @@
 		A2EF401D2D71362000CFB0C5 /* HAPUUIDs.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2EF401C2D71362000CFB0C5 /* HAPUUIDs.swift */; };
 		A2EF401E2D71362000CFB0C5 /* HAPUUIDs.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2EF401C2D71362000CFB0C5 /* HAPUUIDs.swift */; };
 		A2EF40202D713C0600CFB0C5 /* HAPUUIDsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2EF401F2D713C0600CFB0C5 /* HAPUUIDsTests.swift */; };
+		A2F2CD382EE3B0F200D189DC /* Routes+Groups.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2F2CD362EE3B0F200D189DC /* Routes+Groups.swift */; };
+		A2F2CD392EE3B0F200D189DC /* Routes+Scenes.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2F2CD372EE3B0F200D189DC /* Routes+Scenes.swift */; };
 		CB78182B2B7D802B0077671A /* prefabApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB78182A2B7D802B0077671A /* prefabApp.swift */; };
 		CB78182D2B7D802B0077671A /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB78182C2B7D802B0077671A /* ContentView.swift */; };
 		CB78182F2B7D802B0077671A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CB78182E2B7D802B0077671A /* Assets.xcassets */; };
@@ -94,6 +96,8 @@
 		A2EF401C2D71362000CFB0C5 /* HAPUUIDs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAPUUIDs.swift; sourceTree = "<group>"; };
 		A2EF401F2D713C0600CFB0C5 /* HAPUUIDsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HAPUUIDsTests.swift; sourceTree = "<group>"; };
 		A2EF40212D713C5700CFB0C5 /* Prefab.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = Prefab.xctestplan; sourceTree = "<group>"; };
+		A2F2CD362EE3B0F200D189DC /* Routes+Groups.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Routes+Groups.swift"; sourceTree = "<group>"; };
+		A2F2CD372EE3B0F200D189DC /* Routes+Scenes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Routes+Scenes.swift"; sourceTree = "<group>"; };
 		CB7818272B7D802B0077671A /* Prefab.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Prefab.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CB78182A2B7D802B0077671A /* prefabApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = prefabApp.swift; sourceTree = "<group>"; };
 		CB78182C2B7D802B0077671A /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -232,6 +236,8 @@
 		CB9C51862B7D8493007C1AD4 /* http */ = {
 			isa = PBXGroup;
 			children = (
+				A2F2CD362EE3B0F200D189DC /* Routes+Groups.swift */,
+				A2F2CD372EE3B0F200D189DC /* Routes+Scenes.swift */,
 				CB9C51872B7D8493007C1AD4 /* Data.swift */,
 				CB9C51882B7D8493007C1AD4 /* Server.swift */,
 				CB9C51892B7D8493007C1AD4 /* Routes.swift */,
@@ -459,6 +465,8 @@
 				CB9C518B2B7D8493007C1AD4 /* Server.swift in Sources */,
 				CB9C518F2B7D849D007C1AD4 /* HomeBase.swift in Sources */,
 				CB78182B2B7D802B0077671A /* prefabApp.swift in Sources */,
+				A2F2CD382EE3B0F200D189DC /* Routes+Groups.swift in Sources */,
+				A2F2CD392EE3B0F200D189DC /* Routes+Scenes.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -668,8 +676,9 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.kellyp.prefab;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -708,8 +717,9 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.kellyp.prefab;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;

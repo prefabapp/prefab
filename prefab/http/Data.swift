@@ -95,3 +95,62 @@ func GetValue(value: String, format: String) throws -> Any {
         throw UnknownFormatError.formatValue(format: format)
     }
 }
+
+// MARK: - Scenes
+
+/// Basic scene info (list view)
+struct HomeKitScene: Encodable, Decodable {
+    var home: String
+    var uniqueIdentifier: UUID
+    var name: String
+    var isBuiltIn: Bool
+}
+
+/// Action within a scene
+struct SceneAction: Encodable, Decodable {
+    var accessoryName: String
+    var serviceName: String
+    var characteristicType: String
+    var targetValue: String
+}
+
+/// Detailed scene info including actions
+struct SceneDetail: Encodable, Decodable {
+    var home: String
+    var uniqueIdentifier: UUID
+    var name: String
+    var isBuiltIn: Bool
+    var actions: [SceneAction]
+}
+
+// MARK: - Accessory Groups
+
+/// Service within a group
+struct GroupService: Encodable, Decodable {
+    var accessoryName: String
+    var serviceName: String
+    var serviceType: String
+    var uniqueIdentifier: UUID
+}
+
+/// Basic group info (list view)
+struct AccessoryGroup: Encodable, Decodable {
+    var home: String
+    var uniqueIdentifier: UUID
+    var name: String
+    var serviceCount: Int
+}
+
+/// Detailed group info including services
+struct AccessoryGroupDetail: Encodable, Decodable {
+    var home: String
+    var uniqueIdentifier: UUID
+    var name: String
+    var services: [GroupService]
+}
+
+/// Input for updating group characteristics
+struct UpdateGroupInput: Encodable, Decodable {
+    var characteristicType: String
+    var value: String
+}

@@ -19,6 +19,14 @@ This project uses Swift Package Manager through Xcode with the following depende
 - **[swift-http-types](https://github.com/apple/swift-http-types.git)**: Modern HTTP types for Swift
 - **[swift-argument-parser](https://github.com/apple/swift-argument-parser.git)**: Command-line argument parsing
 
+### C++ Client Dependencies
+
+The C++ client library has its own dependencies:
+
+- **libcurl**: HTTP client library
+- **nlohmann/json**: JSON parsing (automatically downloaded)
+- **Avahi** (Linux, optional): For mDNS service discovery
+
 ## Setup and Installation
 
 ### 1. Clone the Repository
@@ -71,6 +79,17 @@ xcodebuild -project prefab.xcodeproj -scheme Prefab -destination 'platform=macOS
 The build creates two main products:
 - **Prefab.app**: The main SwiftUI application with HTTP server
 - **prefab**: The command-line tool (embedded in the app bundle)
+
+### C++ Client Library
+
+This repository also includes a C++ client library for accessing Prefab's HomeKit API from other systems, particularly Raspberry Pi and Linux devices:
+
+- **Location**: `cpp-client/` directory
+- **Purpose**: Access HomeKit data from C++ applications
+- **Target**: Raspberry Pi, Linux, and other embedded systems
+- **Features**: HTTP client, automatic service discovery, type-safe API
+
+See [`cpp-client/README.md`](cpp-client/README.md) for detailed C++ client documentation.
 
 ## Testing
 
@@ -194,6 +213,25 @@ curl http://localhost:8080/homes/[HOME_ID]/accessories
 ```
 
 **mDNS/Bonjour Discovery**: Other devices can discover the service automatically and connect using the advertised hostname and port.
+
+### 4. C++ Client Usage
+
+The C++ client library allows other systems (like Raspberry Pi) to access the Prefab API:
+
+```bash
+# Build the C++ client
+cd cpp-client
+mkdir build && cd build
+cmake ..
+make
+
+# Run examples
+./examples/simple_client
+./examples/discovery_example
+./examples/accessory_control "My Home" "Living Room" "Smart Light"
+```
+
+For detailed C++ usage, see [`cpp-client/README.md`](cpp-client/README.md).
 
 ## Development Workflow
 
