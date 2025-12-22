@@ -3,6 +3,12 @@ Prefab
 
 Prefab is an application that provides a simple HTTP interface to [HomeKit](https://developer.apple.com/documentation/homekit) data. As of this writing the native HomeKit APIs are only available on iOS based systems. The goal of this app is to provide HomeKit access to macOS. The Prefab application provides access to data provided by HomeKit while the prefab CLI tool provides a simple client to request HomeKit data and provide shell access.
 
+This repository includes:
+- **Prefab.app**: A standalone macOS application with HTTP server
+- **prefab CLI**: Command-line tool for accessing HomeKit data
+- **PrefabServer Swift Package**: Embed the HTTP server in your own macOS apps
+- **C++ Client Library**: Access Prefab's API from C++ applications
+
 ## Requirements
 
 - **Xcode**: Version 15.0 or later
@@ -79,6 +85,126 @@ xcodebuild -project prefab.xcodeproj -scheme Prefab -destination 'platform=macOS
 The build creates two main products:
 - **Prefab.app**: The main SwiftUI application with HTTP server
 - **prefab**: The command-line tool (embedded in the app bundle)
+
+### Swift Package (PrefabServer)
+
+This repository includes a Swift Package that allows other macOS apps to embed the Prefab HTTP server functionality:
+
+- **Location**: `Package.swift` and `Sources/PrefabServer/` directory
+- **Purpose**: Embed HomeKit HTTP server in your own macOS applications
+- **Target**: macOS 14.2+ applications
+- **Features**: Full HTTP server, HomeKit integration, mDNS/Bonjour advertising, REST API endpoints
+
+#### Adding PrefabServer to Your Project
+
+**Option 1: Local Package (Development)**
+
+If you have the Prefab repository locally:
+
+1. In Xcode, select your project
+2. Go to **File** → **Add Package Dependencies...**
+3. Click **Add Local...**
+4. Navigate to the Prefab repository directory
+5. Select the directory and click **Add Package**
+
+**Option 2: Git Repository**
+
+If the package is hosted in a Git repository:
+
+1. In Xcode, select your project
+2. Go to **File** → **Add Package Dependencies...**
+3. Enter the repository URL: `https://github.com/kellyp/prefab.git`
+4. Select the version or branch you want to use
+5. Click **Add Package**
+
+#### Using PrefabServer in Your App
+
+1. **Import the package** in your Swift files:
+   ```swift
+   import PrefabServer
+   ```
+
+2. **Configure your app target**:
+   - Enable **HomeKit** capability in **Signing & Capabilities**
+   - Add `NSHomeKitUsageDescription` to your `Info.plist`:
+     ```xml
+     <key>NSHomeKitUsageDescription</key>
+     <string>This app needs access to HomeKit to control your smart home devices.</string>
+     ```
+
+3. **Create and start the server**:
+   ```swift
+   import PrefabServer
+   
+   class AppDelegate: NSObject, NSApplicationDelegate {
+       var server: PrefabServer?
+       
+       func applicationDidFinishLaunching(_ notification: Notification) {
+           // Create server instance
+           server = PrefabServer()
+           
+           // Start the HTTP server
+           server?.start()
+           
+           // Server is now running on http://localhost:8080
+           // It will automatically advertise via mDNS/Bonjour
+       }
+       
+       func applicationWillTerminate(_ notification: Notification) {
+           // Stop the server when app terminates
+           server?.stop()
+       }
+   }
+   ```
+
+4. **Access HomeKit data**:
+   ```swift
+   // Access the HomeBase singleton
+   let homeBase = server?.homeBase
+   
+   // Monitor homes
+   homeBase?.$homes
+       .sink { homes in
+           print("Found \(homes.count) homes")
+       }
+   ```
+
+#### Server Configuration
+
+The server runs with the following defaults:
+- **Port**: 8080
+- **Host**: 0.0.0.0 (listens on all interfaces)
+- **mDNS Service**: `_prefab._tcp.`
+- **Service Name**: "Prefab HomeKit Bridge"
+
+#### API Endpoints
+
+Once started, the server provides the same REST API endpoints as the standalone Prefab app:
+
+- `GET /homes` - List all homes
+- `GET /homes/:home` - Get specific home
+- `GET /rooms/:home` - List rooms in a home
+- `GET /rooms/:home/:room` - Get specific room
+- `GET /accessories/:home/:room` - List accessories in a room
+- `GET /accessories/:home/:room/:accessory` - Get accessory details
+- `PUT /accessories/:home/:room/:accessory` - Update accessory
+- `GET /scenes/:home` - List scenes in a home
+- `GET /scenes/:home/:scene` - Get scene details
+- `POST /scenes/:home/:scene/execute` - Execute a scene
+- `GET /groups/:home` - List accessory groups
+- `GET /groups/:home/:group` - Get group details
+- `PUT /groups/:home/:group` - Update group
+
+#### Requirements for Consumers
+
+Apps using PrefabServer must:
+- Target macOS 14.2 or later
+- Have a valid Apple Developer account (paid membership required)
+- Enable HomeKit capability in Xcode
+- Include `NSHomeKitUsageDescription` in Info.plist
+- Be properly code-signed (required for HomeKit APIs)
+
+See the [API Usage](#3-api-usage) section for examples of interacting with the HTTP endpoints.
 
 ### C++ Client Library
 
