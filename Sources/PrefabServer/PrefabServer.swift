@@ -18,6 +18,7 @@ import HomeKit
 /// server.start()
 /// // Server is now running on port 8080
 /// ```
+@available(macCatalyst 14.0, *)
 public class PrefabServer {
     private let server: Server
     private var serverThread: Thread?

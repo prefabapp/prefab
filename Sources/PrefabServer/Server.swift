@@ -74,6 +74,7 @@ final class BonjourAdvertiser: NSObject, NetServiceDelegate {
 	}
 }
 
+@available(macCatalyst 14.0, *)
 struct HomeKitAuthLogger: HBMiddleware {
     func apply(to request: HBRequest, next: HBResponder) -> EventLoopFuture<HBResponse> {
         let homebase = HomeBase.shared
@@ -88,6 +89,7 @@ struct HomeKitAuthLogger: HBMiddleware {
     }
 }
 
+@available(macCatalyst 14.0, *)
 class Server  {
     var homeBase: HomeBase
     private var bonjourAdvertiser: BonjourAdvertiser?

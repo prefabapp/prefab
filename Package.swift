@@ -6,7 +6,8 @@ import PackageDescription
 let package = Package(
     name: "PrefabServer",
     platforms: [
-        .macOS(.v14_2)
+        .macOS(.v14),
+        .iOS(.v14)
     ],
     products: [
         .library(

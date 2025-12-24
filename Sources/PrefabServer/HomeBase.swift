@@ -12,6 +12,7 @@ import OSLog
 
 
 /// A container for the home manager that's accessible throughout the app.
+@available(macCatalyst 14.0, *)
 public class HomeBase: NSObject, ObservableObject, HMHomeManagerDelegate {
     /// A singleton that can be used anywhere in the app to access the home manager.
     public static var shared = HomeBase()
