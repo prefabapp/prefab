@@ -16,7 +16,7 @@ import HomeKit
 /// ```swift
 /// let server = PrefabServer()
 /// server.start()
-/// // Server is now running on port 8080
+/// // Server is now running on port 8091
 /// ```
 @available(macCatalyst 14.0, *)
 public class PrefabServer {
@@ -31,7 +31,7 @@ public class PrefabServer {
     /// Start the HTTP server on a background thread
     /// 
     /// The server will:
-    /// - Listen on port 8080 at 0.0.0.0
+    /// - Listen on port 8091 at 0.0.0.0 (changed from 8080 to avoid conflict with simulator)
     /// - Advertise via mDNS/Bonjour as "Prefab HomeKit Bridge"
     /// - Provide REST API endpoints for HomeKit data
     public func start() {

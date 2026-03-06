@@ -1,0 +1,9 @@
+# Maximize context: exclude build and tooling so Cursor indexes Sources/ and Package.swift only.
+
+.git/
+.build/
+.swiftpm/
+.vscode/
+.DS_Store
+*.xcodeproj/xcuserdata/
+*.xcworkspace/xcuserdata/

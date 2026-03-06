@@ -105,15 +105,16 @@ class Server  {
     
     private func startAdvertising() {
         // Create and configure the BonjourAdvertiser for mDNS advertising
+        // Note: Port changed from 8080 to 8091 to avoid conflict with simulator
         let txtData: [String: String] = [
             "server": "prefab",
             "version": "1.0",
             "api": "homekit"
         ]
         
-        bonjourAdvertiser = BonjourAdvertiser(name: "Prefab HomeKit Bridge", type: "_prefab._tcp.", port: 8080, txt: txtData)
+        bonjourAdvertiser = BonjourAdvertiser(name: "Prefab HomeKit Bridge", type: "_prefab._tcp.", port: 8091, txt: txtData)
         bonjourAdvertiser?.publish()
-        Logger().info("Started mDNS advertising for Prefab HomeKit Server on port 8080")
+        Logger().info("Started mDNS advertising for Prefab HomeKit Server on port 8091")
     }
     
     private func stopAdvertising() {
@@ -142,7 +143,8 @@ class Server  {
     @objc
     func startServer() {
         Task{
-            let application = HBApplication(configuration: .init(address: .hostname("0.0.0.0", port: 8080)))
+            // Note: Port changed from 8080 to 8091 to avoid conflict with simulator
+            let application = HBApplication(configuration: .init(address: .hostname("0.0.0.0", port: 8091)))
             self.app = application
             application.logger.logLevel = .debug
             application.middleware.add(HBLogRequestsMiddleware(.debug))
